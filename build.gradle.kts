@@ -27,7 +27,7 @@ tasks.withType<JavaCompile> {
 
 application {
     mainModule.set("me.passwordmanager")
-    mainClass.set("me.passwordmanager.HelloApplication")
+    mainClass.set("me.passwordmanager.MainApplication")
 }
 
 javafx {
@@ -37,8 +37,18 @@ javafx {
 
 dependencies {
     implementation("org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0")
+    implementation("com.google.code.gson:gson:2.13.1")
+
+    //JUnit testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
+
+    //Lombok annotation processor
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
+
+    testCompileOnly("org.projectlombok:lombok:1.18.38")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
 }
 
 tasks.withType<Test> {
