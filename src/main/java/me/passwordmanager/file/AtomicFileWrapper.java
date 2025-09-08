@@ -49,6 +49,7 @@ public abstract class AtomicFileWrapper {
         fileChannel = FileChannel.open(Paths.get(getFilePath()), StandardOpenOption.READ, StandardOpenOption.WRITE);
         if((fileLock = fileChannel.tryLock()) == null) throw new AtomicFileLockedException();
         if(backupExists()) throw new AtomicFileCorruptedException(true);
+        readContent(Channels.newInputStream(fileChannel));
     }
 
     private boolean backupExists() {
