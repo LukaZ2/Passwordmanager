@@ -1,11 +1,11 @@
-module me.passwordmanager.passwordmanager {
+module me.passwordmanager {
     requires javafx.controls;
     requires javafx.fxml;
 
     requires org.kordamp.bootstrapfx.core;
     requires static lombok;
-    requires me.passwordmanager.passwordmanager;
     requires com.google.gson;
+    requires org.apache.commons.lang3;
 
     opens me.passwordmanager to javafx.fxml;
     exports me.passwordmanager;
