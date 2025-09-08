@@ -38,6 +38,7 @@ javafx {
 dependencies {
     implementation("org.kordamp.bootstrapfx:bootstrapfx-core:0.4.0")
     implementation("com.google.code.gson:gson:2.13.1")
+    implementation("org.apache.commons:commons-lang3:3.18.0")
 
     //JUnit testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
