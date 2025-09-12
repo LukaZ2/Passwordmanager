@@ -13,6 +13,7 @@
     </padding>
 
     <Text fx:id="title"/>
+<!--    <Text text="abc"/>-->
     <TextField fx:id="fileField"/>
     <Button text="Choose File" onAction="#chooseFileButtonClick"/>
 
