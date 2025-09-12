@@ -23,7 +23,7 @@ public class MainApplication extends Application {
     private FxGuiHandler guiHandler;
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         instance = this;
         this.stage = stage;
         this.guiHandler = new FxGuiHandler();
