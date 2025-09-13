@@ -57,4 +57,10 @@ public class MainMenuController extends FxGui {
         if(file == null) return;
         fileField.setText(file.getAbsolutePath());
     }
+
+    public void createNewFileButtonClick(ActionEvent actionEvent) {
+    }
+
+    public void openSelectedButtonClick(ActionEvent actionEvent) {
+    }
 }
