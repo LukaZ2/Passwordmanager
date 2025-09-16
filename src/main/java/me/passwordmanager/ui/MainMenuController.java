@@ -36,18 +36,11 @@ public class MainMenuController extends FxGui {
     @FXML
     public TextField fileField = new TextField();
 
-    public String test;
-
     @FXML
     public void initialize() {
-        title.setText(test);
     }
 
     public MainMenuController() {}
-
-    public MainMenuController(String test) {
-        this.test = test;
-    }
 
     public void chooseFileButtonClick(ActionEvent actionEvent) {
         FileChooser fileChooser = new FileChooser();

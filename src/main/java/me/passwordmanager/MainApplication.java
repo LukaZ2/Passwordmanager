@@ -28,7 +28,7 @@ public class MainApplication extends Application {
         this.stage = stage;
         this.guiHandler = new FxGuiHandler();
 
-        getGuiHandler().openGui(new MainMenuController("Test"));
+        getGuiHandler().openGui(new MainMenuController());
 
 //        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("main-menu.fxml"));
 //        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
