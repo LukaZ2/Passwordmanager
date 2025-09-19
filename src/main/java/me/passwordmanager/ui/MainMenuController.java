@@ -3,9 +3,12 @@ package me.passwordmanager.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import me.passwordmanager.MainApplication;
+import me.passwordmanager.file.DatabaseFile;
+import me.passwordmanager.file.FileUtils;
 
 import java.io.File;
 
@@ -32,12 +35,21 @@ public class MainMenuController extends FxGui {
     }
 
     @FXML
+    public Text msg;
+    @FXML
     public Text title;
     @FXML
-    public TextField fileField = new TextField();
+    public TextField fileField;
 
     @FXML
     public void initialize() {
+        msg.setVisible(false);
+    }
+
+    public void setMessage(String text) {
+        msg.setText(text);
+        msg.setFill(Color.RED);
+        msg.setVisible(true);
     }
 
     public MainMenuController() {}
@@ -55,5 +67,9 @@ public class MainMenuController extends FxGui {
     }
 
     public void openSelectedButtonClick(ActionEvent actionEvent) {
+        if(!new File(fileField.getText()).exists()) return;
+        DatabaseFile databaseFile = new DatabaseFile(fileField.getText());
+
+        //TODO: Open database
     }
 }

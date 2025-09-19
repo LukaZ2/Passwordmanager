@@ -15,6 +15,7 @@
     <Text fx:id="title"/>
     <Label text="Selected database:"/>
     <TextField fx:id="fileField"/>
+    <Text fx:id="msg"/>
     <Button text="Choose database file" onAction="#chooseFileButtonClick"/>
     <Button text="Open selected" onAction="#openSelectedButtonClick"/>
     <Button text="Create new database" onAction="#createNewFileButtonClick"/>
