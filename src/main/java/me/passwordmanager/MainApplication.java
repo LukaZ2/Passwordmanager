@@ -3,8 +3,10 @@ package me.passwordmanager;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.Setter;
 import me.passwordmanager.ui.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
+import me.passwordmanager.file.DatabaseFile;
 
 import java.io.IOException;
 
@@ -21,6 +23,9 @@ public class MainApplication extends Application {
 
     @Getter
     private FxGuiHandler guiHandler;
+
+    @Setter
+    private DatabaseFile databaseFile;
 
     @Override
     public void start(Stage stage) {
