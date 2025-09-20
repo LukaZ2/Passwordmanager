@@ -9,4 +9,5 @@ module me.passwordmanager {
 
     opens me.passwordmanager to javafx.fxml;
     exports me.passwordmanager;
+    exports me.passwordmanager.ui;
 }
