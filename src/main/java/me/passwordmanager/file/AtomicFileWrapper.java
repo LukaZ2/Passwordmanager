@@ -1,10 +1,7 @@
 package me.passwordmanager.file;
 
 import lombok.Getter;
-import me.passwordmanager.file.exception.AtomicFileBackupCreateFeedback;
-import me.passwordmanager.file.exception.AtomicFileBackupDeleteException;
-import me.passwordmanager.file.exception.AtomicFileCorruptedException;
-import me.passwordmanager.file.exception.AtomicFileLockedException;
+import me.passwordmanager.file.exception.*;
 
 import java.io.*;
 import java.nio.channels.Channels;
@@ -60,6 +57,12 @@ public abstract class AtomicFileWrapper {
         File backup = FileUtils.getFile(getBackupFilePath());
         StreamUtils.writeAll(Channels.newOutputStream(fileChannel), new FileInputStream(backup));
         if(!backup.delete()) throw new AtomicFileBackupDeleteException();
+    }
+
+    public void checkFilePath() throws IOException {
+        var file = new File(getFilePath());
+        if(!file.exists()) throw new FileNotFoundException();
+        if(!file.isFile()) throw new IncorrectFileTypeException();
     }
 
     protected abstract void writeContent(OutputStream outputStream) throws IOException;

@@ -9,8 +9,11 @@ import javafx.stage.FileChooser;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.FileUtils;
+import me.passwordmanager.file.exception.IncorrectFileTypeException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 public class MainMenuController extends FxGui {
 
@@ -47,7 +50,7 @@ public class MainMenuController extends FxGui {
     }
 
     public void setMessage(String text) {
-        msg.setText(text);
+        msg.setText(text.replace("%t", fileField.getText()));
         msg.setFill(Color.RED);
         msg.setVisible(true);
     }
@@ -67,9 +70,22 @@ public class MainMenuController extends FxGui {
     }
 
     public void openSelectedButtonClick(ActionEvent actionEvent) {
-        if(!new File(fileField.getText()).exists()) return;
         DatabaseFile databaseFile = new DatabaseFile(fileField.getText());
 
-        //TODO: Open database
+        try {
+            databaseFile.checkFilePath();
+        } catch (FileNotFoundException e) {
+            setMessage("\"%t\" does not exist");
+            return;
+        } catch (IncorrectFileTypeException e) {
+            setMessage("\"%t\" is not a valid database file");
+            return;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        //TODO: Password prompt + open
+
     }
 }
