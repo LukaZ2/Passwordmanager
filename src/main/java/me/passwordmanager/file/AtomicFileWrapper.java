@@ -54,7 +54,7 @@ public abstract class AtomicFileWrapper {
 
 
     public void restore() throws IOException {
-        File backup = FileUtils.getFile(getBackupFilePath());
+        var backup = FileUtils.getFile(getBackupFilePath());
         StreamUtils.writeAll(Channels.newOutputStream(fileChannel), new FileInputStream(backup));
         if(!backup.delete()) throw new AtomicFileBackupDeleteException();
     }
@@ -69,7 +69,7 @@ public abstract class AtomicFileWrapper {
     protected abstract void readContent(InputStream inputStream) throws IOException;
 
     public void save() throws IOException {
-        File tmp = FileUtils.getFile(getTmpFilePath());
+        var tmp = FileUtils.getFile(getTmpFilePath());
         writeContent(new FileOutputStream(tmp));
 
         if(!tmp.renameTo(new File(getBackupFilePath())))

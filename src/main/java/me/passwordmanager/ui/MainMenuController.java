@@ -58,10 +58,10 @@ public class MainMenuController extends FxGui {
     public MainMenuController() {}
 
     public void chooseFileButtonClick(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
+        var fileChooser = new FileChooser();
         fileChooser.setTitle("Open database");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Database file", "*." + MainApplication.DATABASE_FILE_EXTENSION));
-        File file = fileChooser.showOpenDialog(MainApplication.getInstance().getStage());
+        var file = fileChooser.showOpenDialog(MainApplication.getInstance().getStage());
         if(file == null) return;
         fileField.setText(file.getAbsolutePath());
     }
@@ -70,7 +70,7 @@ public class MainMenuController extends FxGui {
     }
 
     public void openSelectedButtonClick(ActionEvent actionEvent) {
-        DatabaseFile databaseFile = new DatabaseFile(fileField.getText());
+        var databaseFile = new DatabaseFile(fileField.getText());
 
         try {
             databaseFile.checkFilePath();
@@ -86,6 +86,8 @@ public class MainMenuController extends FxGui {
         }
 
         //TODO: Password prompt + open
+        var passwordPromptGui = new PasswordPromptController();
+        MainApplication.getInstance().getGuiHandler().openGui(passwordPromptGui);
 
     }
 }
