@@ -16,4 +16,7 @@ public class Entry {
     private int[] tags;
     private boolean deleted;
 
+    private long dateCreated;
+    private long dateUpdated;
+
 }
