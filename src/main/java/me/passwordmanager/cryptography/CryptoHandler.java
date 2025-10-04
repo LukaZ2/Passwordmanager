@@ -15,10 +15,8 @@ public class CryptoHandler {
 
     private final Cipher encryptCipher;
     private final Cipher decryptCipher;
-    private final SecretKey secretKey;
 
     public CryptoHandler(SecretKey secretKey) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException {
-        this.secretKey = secretKey;
 
         this.encryptCipher = Cipher.getInstance(TRANSFORMATION);
         this.encryptCipher.init(Cipher.ENCRYPT_MODE, secretKey);
