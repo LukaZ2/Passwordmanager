@@ -34,12 +34,5 @@ public class MainApplication extends Application {
         this.guiHandler = new FxGuiHandler();
 
         getGuiHandler().openGui(new MainMenuController());
-
-//        FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("main-menu.fxml"));
-//        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-//        scene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
-//        stage.setTitle(APPLICATION_TITLE);
-//        stage.setScene(scene);
-//        stage.show();
     }
 }
