@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import me.passwordmanager.database.Database;
+import me.passwordmanager.network.NetworkHandler;
 import me.passwordmanager.ui.FxGuiController;
 import me.passwordmanager.ui.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
@@ -16,6 +17,8 @@ public class MainApplication extends Application {
 
     public static final String APPLICATION_TITLE = "Passwordmanager";
     public static final String DATABASE_FILE_EXTENSION = "pwd";
+
+    public static final int LISTEN_PORT = 23232;
 
     @Getter
     private static MainApplication instance;
@@ -30,6 +33,9 @@ public class MainApplication extends Application {
     @Getter
     private DatabaseFile databaseFile;
 
+    @Getter
+    NetworkHandler networkHandler;
+
     public Database getDatabase() {
         return getDatabaseFile().getDatabase();
     }
@@ -39,10 +45,13 @@ public class MainApplication extends Application {
         instance = this;
         this.stage = stage;
         this.guiHandler = new FxGuiHandler();
+        this.networkHandler = new NetworkHandler();
+        new Thread(() -> networkHandler.listen(LISTEN_PORT)).start();
 
         String recentPath = "test";
 
         FxGuiController mainMenu = new MainMenuController(recentPath);
         getGuiHandler().openGui(mainMenu);
+
     }
 }
