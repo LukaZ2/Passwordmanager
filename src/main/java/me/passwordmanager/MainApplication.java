@@ -34,7 +34,7 @@ public class MainApplication extends Application {
     private DatabaseFile databaseFile;
 
     @Getter
-    NetworkHandler networkHandler;
+    private NetworkHandler networkHandler;
 
     public Database getDatabase() {
         return getDatabaseFile().getDatabase();
