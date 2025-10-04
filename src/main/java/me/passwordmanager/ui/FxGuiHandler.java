@@ -9,10 +9,10 @@ import java.io.IOException;
 
 public class FxGuiHandler {
 
-    public void openGui(FxGui gui) {
+    public void openGui(FxGuiController gui) {
         openGui(MainApplication.getInstance().getStage(), gui);
     }
-    public void openGui(Stage stage, FxGui gui) {
+    public void openGui(Stage stage, FxGuiController gui) {
         var loader = new FXMLLoader(MainApplication.class.getResource(gui.xmlFileName()));
         loader.setControllerFactory(type -> gui);
         try {

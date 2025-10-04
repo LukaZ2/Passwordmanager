@@ -8,14 +8,11 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
-import me.passwordmanager.file.FileUtils;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 
-public class MainMenuController extends FxGui {
+public class MainMenuController extends FxGuiController {
 
     @Override
     public String xmlFileName() {
@@ -34,7 +31,7 @@ public class MainMenuController extends FxGui {
 
     @Override
     public int initialHeight() {
-        return 240;
+        return 340;
     }
 
     @FXML
@@ -47,7 +44,10 @@ public class MainMenuController extends FxGui {
     @FXML
     public void initialize() {
         msg.setVisible(false);
+        fileField.setText(recentPath);
     }
+
+    private final String recentPath;
 
     public void setMessage(String text) {
         msg.setText(text.replace("%t", fileField.getText()));
@@ -55,7 +55,13 @@ public class MainMenuController extends FxGui {
         msg.setVisible(true);
     }
 
-    public MainMenuController() {}
+    public MainMenuController() {
+        this("");
+    }
+
+    public MainMenuController(String recentPath) {
+        this.recentPath = recentPath;
+    }
 
     public void chooseFileButtonClick(ActionEvent actionEvent) {
         var fileChooser = new FileChooser();
@@ -79,9 +85,6 @@ public class MainMenuController extends FxGui {
             return;
         } catch (IncorrectFileTypeException e) {
             setMessage("\"%t\" is not a valid database file");
-            return;
-        } catch (IOException e) {
-            e.printStackTrace();
             return;
         }
 

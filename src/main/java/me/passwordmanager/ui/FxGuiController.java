@@ -3,7 +3,7 @@ package me.passwordmanager.ui;
 import javafx.stage.Stage;
 import me.passwordmanager.MainApplication;
 
-public abstract class FxGui {
+public abstract class FxGuiController {
     public abstract String xmlFileName();
     public abstract String initialTitle();
     public abstract int initialWidth();

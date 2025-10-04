@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
+import me.passwordmanager.database.Database;
+import me.passwordmanager.ui.FxGuiController;
 import me.passwordmanager.ui.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
 import me.passwordmanager.file.DatabaseFile;
@@ -25,7 +27,12 @@ public class MainApplication extends Application {
     private FxGuiHandler guiHandler;
 
     @Setter
+    @Getter
     private DatabaseFile databaseFile;
+
+    public Database getDatabase() {
+        return getDatabaseFile().getDatabase();
+    }
 
     @Override
     public void start(Stage stage) {
@@ -33,6 +40,9 @@ public class MainApplication extends Application {
         this.stage = stage;
         this.guiHandler = new FxGuiHandler();
 
-        getGuiHandler().openGui(new MainMenuController());
+        String recentPath = "test";
+
+        FxGuiController mainMenu = new MainMenuController(recentPath);
+        getGuiHandler().openGui(mainMenu);
     }
 }
