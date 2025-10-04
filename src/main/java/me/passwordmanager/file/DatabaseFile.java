@@ -1,6 +1,7 @@
 package me.passwordmanager.file;
 
 import com.google.gson.Gson;
+import lombok.Getter;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.cryptography.CryptoHandler;
 import me.passwordmanager.cryptography.CryptoUtils;
@@ -34,6 +35,7 @@ public class DatabaseFile extends AtomicFileWrapper {
     private String passwordSalt;
     private CryptoHandler cryptoHandler;
 
+    @Getter
     private Database database;
 
     @Override
