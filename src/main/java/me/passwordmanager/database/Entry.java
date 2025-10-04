@@ -13,7 +13,7 @@ public class Entry {
     private String description;
     private String password;
     private String url;
-    private int[] tags;
+    private int[] categories;
     private boolean deleted;
 
     private long dateCreated;

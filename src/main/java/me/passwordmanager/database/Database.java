@@ -2,7 +2,6 @@ package me.passwordmanager.database;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +9,6 @@ import java.util.Map;
 public class Database {
 
     private List<Entry> entries;
-    private Map<Integer, String> tags;
+    private Map<Integer, String> categoryMap;
 
 }
