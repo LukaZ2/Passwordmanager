@@ -86,6 +86,9 @@ public class DatabaseFile extends AtomicFileWrapper {
      */
     public DatabaseFile(String filePath) {
         super(filePath);
+        var file = new File(filePath);
+        if(file.exists()) return;
+        database = new Database();
     }
 
     @Override
