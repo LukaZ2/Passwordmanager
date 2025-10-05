@@ -13,26 +13,27 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class NetworkHandler {
 
     public static final int READ_TIMEOUT = 10000;
 
-    private ServerSocket serverSocket;
-
     public void listen(int port) {
-        try {
-            serverSocket = new ServerSocket(port);
+        //Try-with-resources statement auto-closes the ServerSocket when exiting the try-statement.
+        try(ServerSocket serverSocket = new ServerSocket(port)) {
 
             while(true) {
+                //Wait for a new TCP connection
                 Socket socket = serverSocket.accept();
                 socket.setSoTimeout(READ_TIMEOUT);
 
+                //Process the connection
                 Thread.ofVirtual().start(() -> handleConnection(socket));
             }
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -46,8 +47,11 @@ public class NetworkHandler {
     }
 
     public RequestWrapper readRequest(Socket socket) throws IOException {
+        //Read the length of the request
         int length = readLength(socket);
-        String data = new String(read(socket, length), 0, length, StandardCharsets.UTF_8);
+        //Read 'length' amount of bytes, and them to a string using UTF8 formatting
+        var data = new String(read(socket, length), 0, length, StandardCharsets.UTF_8);
+        //Deserialize into a RequestWrapper using Gson
         var gson = new GsonBuilder().registerTypeAdapter(RequestWrapper.class, new RequestDeserializer()).create();
         return gson.fromJson(data, RequestWrapper.class);
     }
@@ -68,6 +72,7 @@ public class NetworkHandler {
         var data = ArrayUtils.addAll(integerToByteArray(dataString.length()), dataString.getBytes(StandardCharsets.UTF_8));
         socket.getOutputStream().write(data);
         socket.getOutputStream().flush();
+        socket.close();
     }
 
     public byte[] read(Socket socket, int length) throws IOException {
