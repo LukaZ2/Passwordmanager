@@ -1,6 +1,7 @@
 package me.passwordmanager;
 
 import javafx.application.Application;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
@@ -55,5 +56,17 @@ public class MainApplication extends Application {
     @Override
     public void stop() {
         System.exit(0);
+    }
+
+    public Stage createSubstage() {
+        var substage = new Stage();
+        substage.initOwner(getStage());
+        return substage;
+    }
+
+    public Stage createModalSubstage() {
+        var substage = createSubstage();
+        substage.initModality(Modality.WINDOW_MODAL);
+        return substage;
     }
 }

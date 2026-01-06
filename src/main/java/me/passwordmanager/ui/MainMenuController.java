@@ -8,9 +8,14 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
+import me.passwordmanager.file.exception.AtomicFileCorruptedException;
+import me.passwordmanager.file.exception.AtomicFileLockedException;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
+import me.passwordmanager.file.exception.InvalidPasswordException;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
 
 public class MainMenuController extends FxGuiController {
 
@@ -35,25 +40,22 @@ public class MainMenuController extends FxGuiController {
     }
 
     @FXML
-    public Text msg;
-    @FXML
     public Text title;
     @FXML
     public TextField fileField;
 
     @FXML
     public void initialize() {
-        msg.setVisible(false);
         fileField.setText(recentPath);
     }
 
     private final String recentPath;
 
-    public void setMessage(String text) {
-        msg.setText(text.replace("%t", fileField.getText()));
-        msg.setFill(Color.RED);
-        msg.setVisible(true);
-    }
+//    public void setMessage(String text) {
+//        msg.setText(text.replace("%t", fileField.getText()));
+//        msg.setFill(Color.RED);
+//        msg.setVisible(true);
+//    }
 
     public MainMenuController() {
         this("");
@@ -81,16 +83,24 @@ public class MainMenuController extends FxGuiController {
         try {
             databaseFile.checkFilePath();
         } catch (FileNotFoundException e) {
-            setMessage("\"%t\" does not exist");
+            new InfoGui(String.format("\"%s\" does not exist", fileField.getText())).display();
             return;
         } catch (IncorrectFileTypeException e) {
-            setMessage("\"%t\" is not a valid database file");
+            new InfoGui(String.format("\"%s\" is not a valid database file", fileField.getText())).display();
             return;
         }
 
-        //TODO: Password prompt + open
         var passwordPromptGui = new PasswordPromptController();
-        MainApplication.getInstance().getGuiHandler().openGui(passwordPromptGui);
+        MainApplication.getInstance().getGuiHandler().openGui(MainApplication.getInstance().createModalSubstage(), passwordPromptGui);
+        try {
+            databaseFile.open(passwordPromptGui.getPasswordField().getText());
+        } catch (InvalidPasswordException e) {
+            new InfoGui("Wrong password!").display();
+        } catch (AtomicFileLockedException e) {
+            new InfoGui("The database is already opened.").display();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 }
