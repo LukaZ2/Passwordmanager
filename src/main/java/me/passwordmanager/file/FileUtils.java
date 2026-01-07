@@ -12,8 +12,10 @@ public class FileUtils {
     }
     public static File getFile(String path, boolean createNew) throws IOException {
         File file = new File(path);
-        if(!file.isFile()) throw new IncorrectFileTypeException(path + " is not a file.");
-        if(file.exists()) return file;
+        if(file.exists()) {
+            if(!file.isFile()) throw new IncorrectFileTypeException(path + " is not a file.");
+            return file;
+        }
         if(!createNew) throw new FileNotFoundException(path);
         if(!file.createNewFile()) throw new FileCreateException(path);
         return file;

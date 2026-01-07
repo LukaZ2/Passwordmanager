@@ -67,11 +67,11 @@ public abstract class AtomicFileWrapper {
     }
 
     private String getTmpFilePath() {
-        return getWorkingDirectory() + String.format(BACKUP_TMP_FILENAME, getFileName());
+        return getWorkingDirectory() + "/" + String.format(BACKUP_TMP_FILENAME, getFileName());
     }
 
     private String getBackupFilePath() {
-        return getWorkingDirectory() + String.format(BACKUP_COMPLETE_FILENAME, getFileName());
+        return getWorkingDirectory() + "/" + String.format(BACKUP_COMPLETE_FILENAME, getFileName());
     }
 
     /**
@@ -83,6 +83,10 @@ public abstract class AtomicFileWrapper {
         fileChannel = FileChannel.open(Paths.get(getFilePath()), StandardOpenOption.READ, StandardOpenOption.WRITE);
         if((fileLock = fileChannel.tryLock()) == null) throw new AtomicFileLockedException();
         if(backupExists()) throw new AtomicFileCorruptedException(true);
+//        readContent(Channels.newInputStream(fileChannel));
+    }
+
+    public void readContent() throws IOException {
         readContent(Channels.newInputStream(fileChannel));
     }
 
@@ -136,15 +140,15 @@ public abstract class AtomicFileWrapper {
      * @throws IOException thrown when data cannot be written.
      */
     public void save() throws IOException {
-        var tmp = FileUtils.getFile(getTmpFilePath());
+        var tmp = FileUtils.getFile(getTmpFilePath(), true);
         writeContent(new FileOutputStream(tmp));
 
-        if(!tmp.renameTo(new File(getBackupFilePath())))
+        var backup = new File(getBackupFilePath());
+        if(!tmp.renameTo(backup))
             throw new AtomicFileBackupCreateFeedback();
-
         writeContent(Channels.newOutputStream(fileChannel));
 
-        if(!tmp.delete()) throw new AtomicFileBackupDeleteException();
+        if(!backup.delete()) throw new AtomicFileBackupDeleteException();
     }
 
     /**

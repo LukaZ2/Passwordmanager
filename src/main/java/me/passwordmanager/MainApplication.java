@@ -59,14 +59,10 @@ public class MainApplication extends Application {
     }
 
     public Stage createSubstage() {
-        var substage = new Stage();
-        substage.initOwner(getStage());
-        return substage;
+        return FxGuiHandler.createSubstage(getStage());
     }
 
     public Stage createModalSubstage() {
-        var substage = createSubstage();
-        substage.initModality(Modality.WINDOW_MODAL);
-        return substage;
+        return FxGuiHandler.createModalSubstage(getStage());
     }
 }

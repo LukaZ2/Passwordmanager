@@ -9,14 +9,14 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Entry {
 
-    private String name;
-    private String description;
-    private String password;
-    private String url;
-    private int[] categories;
-    private boolean deleted;
+    public String name;
+    public String description;
+    public String password;
+    public String url;
+    public int[] categories;
+    public boolean deleted;
 
-    private long dateCreated;
-    private long dateUpdated;
+    public long dateCreated;
+    public long dateUpdated;
 
 }

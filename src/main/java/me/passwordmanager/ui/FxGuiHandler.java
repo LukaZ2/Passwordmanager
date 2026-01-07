@@ -2,6 +2,7 @@ package me.passwordmanager.ui;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import me.passwordmanager.MainApplication;
 
@@ -20,7 +21,25 @@ public class FxGuiHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        gui.setStageProperties(stage);
+        gui.setStage(stage);
     }
 
+    public void openSubGui(FxGuiController gui) {
+        openSubGui(gui, false);
+    }
+    public void openSubGui(FxGuiController gui, boolean modal) {
+        openGui(modal ? MainApplication.getInstance().createModalSubstage() : MainApplication.getInstance().createSubstage(), gui);
+    }
+
+    public static Stage createSubstage(Stage parent) {
+        var substage = new Stage();
+        substage.initOwner(parent);
+        return substage;
+    }
+
+    public static Stage createModalSubstage(Stage parent) {
+        var substage = createSubstage(parent);
+        substage.initModality(Modality.WINDOW_MODAL);
+        return substage;
+    }
 }

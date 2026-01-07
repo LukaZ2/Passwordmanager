@@ -8,7 +8,7 @@ import java.util.Map;
 @Getter
 public class Database {
 
-    private List<Entry> entries;
-    private Map<Integer, String> categoryMap;
+    public List<Entry> entries;
+    public Map<Integer, String> categoryMap;
 
 }

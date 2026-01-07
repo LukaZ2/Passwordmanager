@@ -75,6 +75,7 @@ public class MainMenuController extends FxGuiController {
     }
 
     public void createNewFileButtonClick(ActionEvent actionEvent) {
+        MainApplication.getInstance().getGuiHandler().openSubGui(new CreateNewMenuController(), true);
     }
 
     public void openSelectedButtonClick(ActionEvent actionEvent) {

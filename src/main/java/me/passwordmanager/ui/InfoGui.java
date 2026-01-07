@@ -11,25 +11,31 @@ import me.passwordmanager.MainApplication;
 
 public class InfoGui implements IDisplayableGui {
 
-    private String text;
-    private String buttonText;
+    private final String text;
+    private final String buttonText;
+    private final Stage parent;
 
-    public InfoGui(String text) {
-        this(text, "Ok");
+    public InfoGui(String text, Stage parent) {
+        this(text, "Ok", parent);
     }
 
-    public InfoGui(String text, String buttonText) {
+    public InfoGui(String text) {
+        this(text, "Ok", MainApplication.getInstance().getStage());
+    }
+
+    public InfoGui(String text, String buttonText, Stage parent) {
         this.text = text;
         this.buttonText = buttonText;
+        this.parent = parent;
     }
 
     @Override
     public void display() {
-        var stage = MainApplication.getInstance().createModalSubstage();
+        var stage = FxGuiHandler.createModalSubstage(parent);
 
         stage.setResizable(false);
-        stage.setHeight(100);
-        stage.setWidth(200);
+//        stage.setHeight(100);
+//        stage.setWidth(200);
 
         var root = new VBox();
         root.alignmentProperty().setValue(Pos.CENTER);
@@ -45,6 +51,7 @@ public class InfoGui implements IDisplayableGui {
         root.getChildren().add(button);
 
         stage.setScene(new Scene(root));
+        root.autosize();
         stage.show();
     }
 }

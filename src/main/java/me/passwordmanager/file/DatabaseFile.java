@@ -7,11 +7,13 @@ import me.passwordmanager.cryptography.CryptoHandler;
 import me.passwordmanager.cryptography.CryptoUtils;
 import me.passwordmanager.database.Database;
 import me.passwordmanager.file.exception.DatabaseLoadException;
+import me.passwordmanager.file.exception.FileCreateException;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
 import me.passwordmanager.file.exception.InvalidPasswordException;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -21,6 +23,15 @@ import java.util.Arrays;
  * The type Database file to be serialized as JSON.
  */
 public class DatabaseFile extends AtomicFileWrapper {
+
+    public static DatabaseFile createNewDatabase(String directory, String name, String password) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
+        if(!directory.endsWith("/")) directory += "/";
+        var filePath = directory + name + "." + MainApplication.DATABASE_FILE_EXTENSION;
+        if(new File(filePath).exists()) throw new FileCreateException(String.format("File \"%s\" already exists.", filePath));
+        var databaseFile = new DatabaseFile(filePath);
+        databaseFile.initNew(password);
+        return databaseFile;
+    }
 
     /**
      * Specifies password salt string length.
@@ -40,9 +51,8 @@ public class DatabaseFile extends AtomicFileWrapper {
 
     @Override
     protected void writeContent(OutputStream outputStream) throws IOException {
-        try(var writer = new OutputStreamWriter(outputStream)) {
-            writer.write(passwordSalt, 0, passwordSalt.length());
-        }
+        outputStream.write(passwordSalt.getBytes(StandardCharsets.UTF_8), 0, passwordSalt.length());
+        outputStream.flush();
         try(var writer = new OutputStreamWriter(cryptoHandler.wrapOutputStream(outputStream))) {
             var gson = new Gson();
             gson.toJson(database, writer);
@@ -51,19 +61,19 @@ public class DatabaseFile extends AtomicFileWrapper {
 
     @Override
     protected void readContent(InputStream inputStream) throws IOException {
-        try(var reader = new InputStreamReader(inputStream)) {
-            try {
-                passwordSalt = new String(StreamUtils.read(reader, PASSWORD_SALT_LENGTH));
-                initCryptoHandler(password, passwordSalt);
-            } catch (StreamCorruptedException | NoSuchAlgorithmException | InvalidKeySpecException |
-                     NoSuchPaddingException | InvalidKeyException e) {
-                throw new DatabaseLoadException("Failed to read password salt.");
-            }
+        var reader = new InputStreamReader(inputStream);
+        try {
+            passwordSalt = new String(StreamUtils.read(reader, PASSWORD_SALT_LENGTH));
+            initCryptoHandler(password, passwordSalt);
+        } catch (StreamCorruptedException | NoSuchAlgorithmException | InvalidKeySpecException |
+                 NoSuchPaddingException | InvalidKeyException e) {
+            throw new DatabaseLoadException("Failed to read password salt.");
         }
-        try(var reader = new InputStreamReader(cryptoHandler.wrapInputStream(inputStream))) {
-            if(!checkVerifyToken(reader)) throw new InvalidPasswordException();
+
+        try(var encryptedReader = new InputStreamReader(cryptoHandler.wrapInputStream(inputStream))) {
+            if(!checkVerifyToken(encryptedReader)) throw new InvalidPasswordException();
             var gson = new Gson();
-            database = gson.fromJson(reader, Database.class);
+            database = gson.fromJson(encryptedReader, Database.class);
         }
     }
 
@@ -110,6 +120,16 @@ public class DatabaseFile extends AtomicFileWrapper {
     public void open(String password) throws IOException {
         this.password = password;
         super.open();
+        super.readContent();
         this.password = null;
+    }
+
+    private void initNew(String password) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, IOException {
+        database = new Database();
+        passwordSalt = CryptoUtils.generateRandomPassword(PASSWORD_SALT_LENGTH);
+        initCryptoHandler(password, passwordSalt);
+        createNew();
+        open();
+        save();
     }
 }
