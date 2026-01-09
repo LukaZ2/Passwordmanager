@@ -3,10 +3,12 @@ package me.passwordmanager.ui;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.util.Callback;
 import me.passwordmanager.database.Database;
 import me.passwordmanager.database.Entry;
 import me.passwordmanager.file.DatabaseFile;
@@ -43,6 +45,11 @@ public class DatabaseMenuController extends FxGuiController {
         createdColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
 
         tableView.setItems(FXCollections.observableList(databaseFile.getDatabase().getEntries()));
+        tableView.setRowFactory(param -> {
+            var tableRow = new TableRow<Entry>();
+            tableRow.setContextMenu(createContextMenu(tableRow));
+            return tableRow;
+        });
     }
 
     public ObservableValue<String> mapCategories(TableColumn.CellDataFeatures<Entry, String> param) {
@@ -51,6 +58,25 @@ public class DatabaseMenuController extends FxGuiController {
                         .mapToObj(databaseFile.getDatabase()::getCategoryName)
                         .toList().toString()
         );
+    }
+
+    public ContextMenu createContextMenu(TableRow<Entry> row) {
+        var contextMenu = new ContextMenu();
+
+        var deleteItem = new MenuItem("Delete entry");
+
+        contextMenu.getItems().addAll(
+                createCopyClipboardItem("username", row.getItem().getUsername()),
+                createCopyClipboardItem("password", row.getItem().getPassword()),
+                createCopyClipboardItem("url", row.getItem().getUrl()),
+                deleteItem
+        );
+        return contextMenu;
+    }
+
+    public MenuItem createCopyClipboardItem(String name, String value) {
+        var menuItem = new MenuItem("Copy " + name);
+        return menuItem;
     }
 
     @Override
@@ -63,13 +89,7 @@ public class DatabaseMenuController extends FxGuiController {
         return databaseFile.getFileName();
     }
 
-    @Override
-    public int initialWidth() {
-        return 600;
-    }
-
-    @Override
-    public int initialHeight() {
-        return 500;
+    @FXML
+    public void onClickCreateNew(ActionEvent actionEvent) {
     }
 }

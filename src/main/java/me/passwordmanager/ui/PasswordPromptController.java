@@ -34,16 +34,16 @@ public class PasswordPromptController extends FxGuiController {
             getDatabaseFile().open(passwordField.getText());
 
             getStage().close();
-            MainApplication.getInstance().getGuiHandler().openGui(new DatabaseMenuController(getDatabaseFile()));
+            new DatabaseMenuController(getDatabaseFile()).display(MainApplication.getInstance().getStage());
 
             return;
         } catch (InvalidPasswordException e) {
-            new InfoGui("Wrong password! Please try again.", getStage()).display();
+            new InfoGui("Wrong password! Please try again.").display(getStage());
             return;
         } catch (AtomicFileLockedException e) {
-            new InfoGui(String.format("The database file \"%s\" is already opened.", getDatabaseFile().getFileName()), getStage()).display();
+            new InfoGui(String.format("The database file \"%s\" is already opened.", getDatabaseFile().getFileName())).display(getStage());
         } catch (AtomicFileCorruptedException e) {
-            new InfoGui(String.format("The database file \"%s\" is corrupted.", getDatabaseFile().getFileName()), getStage()).display();
+            new InfoGui(String.format("The database file \"%s\" is corrupted.", getDatabaseFile().getFileName())).display(getStage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -59,15 +59,5 @@ public class PasswordPromptController extends FxGuiController {
     @Override
     public String initialTitle() {
         return "Enter password";
-    }
-
-    @Override
-    public int initialWidth() {
-        return 200;
-    }
-
-    @Override
-    public int initialHeight() {
-        return 150;
     }
 }

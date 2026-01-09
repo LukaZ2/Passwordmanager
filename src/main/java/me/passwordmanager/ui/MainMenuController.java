@@ -3,19 +3,13 @@ package me.passwordmanager.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
-import me.passwordmanager.file.exception.AtomicFileCorruptedException;
-import me.passwordmanager.file.exception.AtomicFileLockedException;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
-import me.passwordmanager.file.exception.InvalidPasswordException;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
 
 public class MainMenuController extends FxGuiController {
 
@@ -27,16 +21,6 @@ public class MainMenuController extends FxGuiController {
     @Override
     public String initialTitle() {
         return "Main menu";
-    }
-
-    @Override
-    public int initialWidth() {
-        return 320;
-    }
-
-    @Override
-    public int initialHeight() {
-        return 340;
     }
 
     @FXML
@@ -75,7 +59,7 @@ public class MainMenuController extends FxGuiController {
     }
 
     public void createNewFileButtonClick(ActionEvent actionEvent) {
-        MainApplication.getInstance().getGuiHandler().openSubGui(new CreateNewMenuController(), true);
+        new CreateNewDatabaseMenuController().display(createModalSubstage());
     }
 
     public void openSelectedButtonClick(ActionEvent actionEvent) {
@@ -84,14 +68,13 @@ public class MainMenuController extends FxGuiController {
         try {
             databaseFile.checkFilePath();
         } catch (FileNotFoundException e) {
-            new InfoGui(String.format("\"%s\" does not exist", fileField.getText())).display();
+            new InfoGui(String.format("\"%s\" does not exist", fileField.getText())).display(getStage());
             return;
         } catch (IncorrectFileTypeException e) {
-            new InfoGui(String.format("\"%s\" is not a valid database file", fileField.getText())).display();
+            new InfoGui(String.format("\"%s\" is not a valid database file", fileField.getText())).display(getStage());
             return;
         }
 
-        var passwordPromptGui = new PasswordPromptController(databaseFile);
-        MainApplication.getInstance().getGuiHandler().openGui(MainApplication.getInstance().createModalSubstage(), passwordPromptGui);
+        new PasswordPromptController(databaseFile).display(MainApplication.getInstance().createModalSubstage());
     }
 }

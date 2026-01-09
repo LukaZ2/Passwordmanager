@@ -8,7 +8,8 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
-<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="me.passwordmanager.ui.CreateNewMenuController">
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="me.passwordmanager.ui.CreateNewDatabaseMenuController"
+prefWidth="320" prefHeight="400">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>

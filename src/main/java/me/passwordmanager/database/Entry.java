@@ -22,11 +22,12 @@ public class Entry {
 
     public long dateCreated;
     public long dateModified;
+    
 
     public ObservableValue<String> dateCreatedProperty() {
         return new ReadOnlyObjectWrapper<>(MainApplication.getFormattedDate(dateCreated));
     }
-
+    
     public ObservableValue<String> dateModifiedProperty() {
         return new ReadOnlyObjectWrapper<>(MainApplication.getFormattedDate(dateModified));
     }

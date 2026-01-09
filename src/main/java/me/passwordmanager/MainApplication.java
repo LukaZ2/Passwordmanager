@@ -28,9 +28,6 @@ public class MainApplication extends Application {
     @Getter
     private Stage stage;
 
-    @Getter
-    private FxGuiHandler guiHandler;
-
     @Setter
     @Getter
     private DatabaseFile databaseFile;
@@ -46,14 +43,12 @@ public class MainApplication extends Application {
     public void start(Stage stage) {
         instance = this;
         this.stage = stage;
-        this.guiHandler = new FxGuiHandler();
         this.networkHandler = new NetworkHandler();
         new Thread(() -> networkHandler.listen(LISTEN_PORT)).start();
 
         String recentPath = "test";
 
-        FxGuiController mainMenu = new MainMenuController(recentPath);
-        getGuiHandler().openGui(mainMenu);
+        new MainMenuController(recentPath).display(getStage());
     }
 
     @Override
