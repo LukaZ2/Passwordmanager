@@ -11,6 +11,7 @@ import me.passwordmanager.file.exception.FileCreateException;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
 import me.passwordmanager.file.exception.InvalidPasswordException;
 
+import javax.crypto.CipherInputStream;
 import javax.crypto.NoSuchPaddingException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -53,39 +54,33 @@ public class DatabaseFile extends AtomicFileWrapper {
     protected void writeContent(OutputStream outputStream) throws IOException {
         outputStream.write(passwordSalt.getBytes(StandardCharsets.UTF_8), 0, passwordSalt.length());
         outputStream.flush();
-        try(var writer = new OutputStreamWriter(cryptoHandler.wrapOutputStream(outputStream))) {
+        try(var encryptedStream = cryptoHandler.wrapOutputStream(outputStream)) {
+            encryptedStream.write(VERIFY_TOKEN.getBytes(StandardCharsets.UTF_8));
             var gson = new Gson();
-            gson.toJson(database, writer);
+            encryptedStream.write(gson.toJson(database).getBytes(StandardCharsets.UTF_8));
         }
     }
 
     @Override
     protected void readContent(InputStream inputStream) throws IOException {
-        var reader = new InputStreamReader(inputStream);
         try {
-            passwordSalt = new String(StreamUtils.read(reader, PASSWORD_SALT_LENGTH));
+            passwordSalt = new String(StreamUtils.read(inputStream, PASSWORD_SALT_LENGTH), StandardCharsets.UTF_8);
             initCryptoHandler(password, passwordSalt);
         } catch (StreamCorruptedException | NoSuchAlgorithmException | InvalidKeySpecException |
                  NoSuchPaddingException | InvalidKeyException e) {
             throw new DatabaseLoadException("Failed to read password salt.");
         }
 
-        try(var encryptedReader = new InputStreamReader(cryptoHandler.wrapInputStream(inputStream))) {
-            if(!checkVerifyToken(encryptedReader)) throw new InvalidPasswordException();
+        try(var encryptedStream = cryptoHandler.wrapInputStream(inputStream)) {
+            if(!checkVerifyToken(encryptedStream)) throw new InvalidPasswordException();
             var gson = new Gson();
-            database = gson.fromJson(encryptedReader, Database.class);
+            var data = StreamUtils.readAll(encryptedStream);
+            database = gson.fromJson(data, Database.class);
         }
     }
 
-    /**
-     * Check if the decryption key yields the correct verify token.
-     *
-     * @param reader InputStreamReader to read the data from.
-     * @return whether the verify token is correct.
-     * @throws IOException thrown when data cannot be read.
-     */
-    public boolean checkVerifyToken(InputStreamReader reader) throws IOException {
-        String token = Arrays.toString(StreamUtils.read(reader, VERIFY_TOKEN.length()));
+    public boolean checkVerifyToken(CipherInputStream stream) throws IOException {
+        var token = new String(StreamUtils.read(stream, VERIFY_TOKEN.length()), StandardCharsets.UTF_8);
         return token.equals(VERIFY_TOKEN);
     }
 

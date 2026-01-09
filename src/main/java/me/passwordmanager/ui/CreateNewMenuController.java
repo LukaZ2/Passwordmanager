@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import me.passwordmanager.MainApplication;
+import me.passwordmanager.database.Database;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.exception.FileCreateException;
 
@@ -53,8 +54,9 @@ public class CreateNewMenuController extends FxGuiController {
             return;
         }
 
+        DatabaseFile databaseFile;
         try {
-            DatabaseFile.createNewDatabase(directoryField.getText(), nameField.getText(), passwordField.getText());
+            databaseFile = DatabaseFile.createNewDatabase(directoryField.getText(), nameField.getText(), passwordField.getText());
         } catch (FileCreateException e) {
             new InfoGui(e.getMessage()).display();
             return;
@@ -63,6 +65,8 @@ public class CreateNewMenuController extends FxGuiController {
             throw new RuntimeException(e);
         }
         getStage().close();
+
+        MainApplication.getInstance().getGuiHandler().openGui(new DatabaseMenuController(databaseFile));
     }
 
     @Override

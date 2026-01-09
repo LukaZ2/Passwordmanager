@@ -12,6 +12,9 @@ import me.passwordmanager.ui.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
 import me.passwordmanager.file.DatabaseFile;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 public class MainApplication extends Application {
 
     public static final String APPLICATION_TITLE = "Passwordmanager";
@@ -64,5 +67,11 @@ public class MainApplication extends Application {
 
     public Stage createModalSubstage() {
         return FxGuiHandler.createModalSubstage(getStage());
+    }
+
+    public static String getFormattedDate(long unixTimeMs) {
+        var date = new Date();
+        date.setTime(unixTimeMs);
+        return date.toString();
     }
 }

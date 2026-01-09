@@ -91,17 +91,7 @@ public class MainMenuController extends FxGuiController {
             return;
         }
 
-        var passwordPromptGui = new PasswordPromptController();
+        var passwordPromptGui = new PasswordPromptController(databaseFile);
         MainApplication.getInstance().getGuiHandler().openGui(MainApplication.getInstance().createModalSubstage(), passwordPromptGui);
-        try {
-            databaseFile.open(passwordPromptGui.getPasswordField().getText());
-        } catch (InvalidPasswordException e) {
-            new InfoGui("Wrong password!").display();
-        } catch (AtomicFileLockedException e) {
-            new InfoGui("The database is already opened.").display();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }

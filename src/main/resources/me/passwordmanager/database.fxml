@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TableColumn?>
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml" fx:controller="me.passwordmanager.ui.DatabaseMenuController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+    </padding>
+
+    <TableView fx:id="tableView">
+        <columns>
+            <TableColumn fx:id="titleColumn" text="Title"/>
+            <TableColumn fx:id="usernameColumn" text="Username"/>
+            <TableColumn fx:id="urlColumn" text="URL"/>
+            <TableColumn fx:id="categoriesColumn" text="Categories"/>
+            <TableColumn fx:id="descriptionColumn" text="Description"/>
+            <TableColumn fx:id="modifiedColumn" text="Modified"/>
+            <TableColumn fx:id="createdColumn" text="Created"/>
+        </columns>
+    </TableView>
+
+</VBox>

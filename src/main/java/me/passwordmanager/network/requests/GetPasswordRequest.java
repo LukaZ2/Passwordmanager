@@ -18,7 +18,7 @@ public class GetPasswordRequest implements IRequest {
                     .filter(e -> e.getUrl().equalsIgnoreCase(url))
                     .findAny().orElse(null);
             if(entry == null) return new Response();
-            return new Response(true, entry.getName(), entry.getPassword());
+            return new Response(true, entry.getUsername(), entry.getPassword());
         }
     }
 
