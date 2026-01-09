@@ -1,12 +1,7 @@
-package me.passwordmanager.ui;
+package me.passwordmanager.ui.util;
 
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import me.passwordmanager.MainApplication;
-
-import java.io.IOException;
 
 public class FxGuiHandler {
 

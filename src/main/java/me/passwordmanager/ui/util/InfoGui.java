@@ -1,4 +1,4 @@
-package me.passwordmanager.ui;
+package me.passwordmanager.ui.util;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,7 +8,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import me.passwordmanager.MainApplication;
+import me.passwordmanager.ui.IDisplayableGui;
 
 public class InfoGui implements IDisplayableGui {
 

@@ -11,4 +11,5 @@ module me.passwordmanager {
     exports me.passwordmanager;
     exports me.passwordmanager.ui;
     exports me.passwordmanager.database;
+    exports me.passwordmanager.ui.util;
 }

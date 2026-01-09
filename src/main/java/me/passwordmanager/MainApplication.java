@@ -1,18 +1,15 @@
 package me.passwordmanager;
 
 import javafx.application.Application;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import me.passwordmanager.database.Database;
 import me.passwordmanager.network.NetworkHandler;
-import me.passwordmanager.ui.FxGuiController;
-import me.passwordmanager.ui.FxGuiHandler;
+import me.passwordmanager.ui.util.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
 import me.passwordmanager.file.DatabaseFile;
 
-import java.time.LocalDate;
 import java.util.Date;
 
 public class MainApplication extends Application {

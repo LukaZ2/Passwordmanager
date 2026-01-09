@@ -6,12 +6,23 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.geometry.Insets?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller=""
-      spacing="20"
+      fx:controller="me.passwordmanager.ui.CreateNewEntryMenuController"
+      spacing="10"
+      alignment="CENTER"
       prefHeight="400.0" prefWidth="600.0">
 
+    <padding>
+        <Insets left="20" right="20" bottom="20" top="20"/>
+    </padding>
 
+    <Group>
+        <Label text="Title"/>
+        <TextField fx:id="titleField"/>
+    </Group>
+
+    <Button text="Create" onAction="#onClickCreate"/>
 
 </VBox>

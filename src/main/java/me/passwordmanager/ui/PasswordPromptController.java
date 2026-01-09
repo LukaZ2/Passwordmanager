@@ -10,6 +10,7 @@ import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.exception.AtomicFileCorruptedException;
 import me.passwordmanager.file.exception.AtomicFileLockedException;
 import me.passwordmanager.file.exception.InvalidPasswordException;
+import me.passwordmanager.ui.util.InfoGui;
 
 import java.io.IOException;
 

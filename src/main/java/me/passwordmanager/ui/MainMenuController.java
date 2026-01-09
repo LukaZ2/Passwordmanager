@@ -8,6 +8,7 @@ import javafx.stage.FileChooser;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
+import me.passwordmanager.ui.util.InfoGui;
 
 import java.io.FileNotFoundException;
 

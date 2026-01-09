@@ -4,8 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.Getter;
-import lombok.Setter;
 import me.passwordmanager.MainApplication;
+import me.passwordmanager.ui.util.FxGuiHandler;
 
 import java.io.IOException;
 
