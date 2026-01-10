@@ -21,8 +21,11 @@ public class CreateNewEntryMenuController extends FxGuiController {
     @FXML public TextField titleField;
     @FXML public TextField usernameField;
     @FXML public PasswordField passwordField;
+    @FXML public TextField revealedPasswordField;
     @FXML public TextField urlField;
     @FXML public TextArea descriptionArea;
+
+    private boolean passwordRevealed;
 
     private final Consumer<Entry> entryConsumer;
 
@@ -43,6 +46,7 @@ public class CreateNewEntryMenuController extends FxGuiController {
         titleField.setTextFormatter(TextLimiter.limit(20));
         usernameField.setTextFormatter(TextLimiter.limit(50));
         passwordField.setTextFormatter(TextLimiter.limit(50));
+        revealedPasswordField.setTextFormatter(TextLimiter.limit(50));
         urlField.setTextFormatter(TextLimiter.limit(50));
 
         titleField.setText(entry.getTitle());
@@ -50,6 +54,8 @@ public class CreateNewEntryMenuController extends FxGuiController {
         passwordField.setText(entry.getPassword());
         urlField.setText(entry.getUrl());
         descriptionArea.setText(entry.getDescription());
+
+        passwordRevealed = false;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class CreateNewEntryMenuController extends FxGuiController {
         }
         entry.setTitle(titleField.getText());
         entry.setUsername(usernameField.getText());
-        entry.setPassword(passwordField.getText());
+        entry.setPassword(getPassword());
         entry.setUrl(urlField.getText());
         entry.setDescription(descriptionArea.getText());
         entry.setDateModified(System.currentTimeMillis());
@@ -116,5 +122,22 @@ public class CreateNewEntryMenuController extends FxGuiController {
         root.getChildren().addAll(new HBox(label, label2), slider, button);
         stage.setScene(new Scene(root));
         stage.show();
+    }
+
+    @FXML
+    public void onClickRevealPassword(ActionEvent actionEvent) {
+        passwordRevealed = !passwordRevealed;
+        passwordField.setVisible(!passwordRevealed);
+        revealedPasswordField.setVisible(passwordRevealed);
+
+        if(passwordRevealed) {
+            revealedPasswordField.setText(passwordField.getText());
+            return;
+        }
+        passwordField.setText(revealedPasswordField.getText());
+    }
+
+    private String getPassword() {
+        return passwordRevealed ? revealedPasswordField.getText() : passwordField.getText();
     }
 }

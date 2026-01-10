@@ -28,8 +28,12 @@
         <VBox>
             <TextField fx:id="titleField"/>
             <TextField fx:id="usernameField"/>
-            <HBox spacing="12">
-                <PasswordField fx:id="passwordField"/>
+            <HBox spacing="8">
+                <Group>
+                    <PasswordField fx:id="passwordField"/>
+                    <TextField fx:id="revealedPasswordField" visible="false"/>
+                </Group>
+                <Button text="X" onAction="#onClickRevealPassword"/>
                 <Button text="Generate" onAction="#onClickedGenerate"/>
             </HBox>
             <TextField fx:id="urlField"/>
