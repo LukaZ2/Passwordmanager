@@ -30,6 +30,9 @@ public class DatabaseMenuController extends FxGuiController {
     @FXML public TableColumn<Entry, String> modifiedColumn;
     @FXML public TableColumn<Entry, String> createdColumn;
 
+    @FXML
+    public TextField searchField;
+
     private final DatabaseFile databaseFile;
 
     public DatabaseMenuController(DatabaseFile databaseFile) {
@@ -64,8 +67,7 @@ public class DatabaseMenuController extends FxGuiController {
         var editItem = new MenuItem("Edit entry");
         editItem.setOnAction(event -> {
             new CreateNewEntryMenuController(entry, entry1 -> {
-                tableView.getItems().remove(entry);
-                tableView.getItems().add(entry);
+                tableView.refresh();
                 wrappedSave();
             }).display(createModalSubstage());
         });

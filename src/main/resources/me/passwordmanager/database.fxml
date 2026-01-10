@@ -13,6 +13,8 @@
         <Button onAction="#onClickCreateNew" text="New entry" />
     </HBox>
 
+    <TextField promptText="Search for entries" fx:id="searchField"/>
+
     <TableView fx:id="tableView" VBox.vgrow="SOMETIMES">
         <columns>
             <TableColumn fx:id="titleColumn" text="Title" />
