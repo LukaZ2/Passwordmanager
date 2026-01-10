@@ -17,7 +17,6 @@ public class Entry {
     public String password;
     public String url;
     public String description;
-    public int[] categories;
 
     public long dateCreated;
     public long dateModified;
@@ -28,7 +27,6 @@ public class Entry {
         password = "";
         url = "";
         description = "";
-        categories = new int[0];
         dateCreated = System.currentTimeMillis();
         dateModified = System.currentTimeMillis();
     }

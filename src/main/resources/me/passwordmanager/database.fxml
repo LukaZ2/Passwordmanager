@@ -18,7 +18,6 @@
             <TableColumn fx:id="titleColumn" text="Title" />
             <TableColumn fx:id="usernameColumn" text="Username" />
             <TableColumn fx:id="urlColumn" text="URL" />
-            <TableColumn fx:id="categoriesColumn" text="Categories" />
             <TableColumn fx:id="descriptionColumn" text="Description" />
             <TableColumn fx:id="modifiedColumn" text="Modified" />
             <TableColumn fx:id="createdColumn" text="Created" />

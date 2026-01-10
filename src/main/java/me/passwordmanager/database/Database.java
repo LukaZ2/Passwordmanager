@@ -11,15 +11,9 @@ import java.util.Map;
 public class Database {
 
     public List<Entry> entries;
-    public Map<Integer, String> categoryMap;
 
     public Database() {
         this.entries = new ArrayList<>();
-        this.categoryMap = new HashMap<>();
-    }
-
-    public String getCategoryName(int id) {
-        return categoryMap.get(id);
     }
 
 }

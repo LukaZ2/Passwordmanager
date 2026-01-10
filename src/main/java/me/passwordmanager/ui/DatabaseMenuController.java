@@ -26,7 +26,6 @@ public class DatabaseMenuController extends FxGuiController {
     @FXML public TableColumn<Entry, String> titleColumn;
     @FXML public TableColumn<Entry, String> usernameColumn;
     @FXML public TableColumn<Entry, String> urlColumn;
-    @FXML public TableColumn<Entry, String> categoriesColumn;
     @FXML public TableColumn<Entry, String> descriptionColumn;
     @FXML public TableColumn<Entry, String> modifiedColumn;
     @FXML public TableColumn<Entry, String> createdColumn;
@@ -42,21 +41,12 @@ public class DatabaseMenuController extends FxGuiController {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         urlColumn.setCellValueFactory(new PropertyValueFactory<>("url"));
-        categoriesColumn.setCellValueFactory(this::mapCategories);
         descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
         modifiedColumn.setCellValueFactory(new PropertyValueFactory<>("dateModified"));
         createdColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
 
         tableView.setRowFactory(this::rowFactory);
         tableView.setItems(FXCollections.observableList(databaseFile.getDatabase().getEntries()));
-    }
-
-    public ObservableValue<String> mapCategories(TableColumn.CellDataFeatures<Entry, String> param) {
-        return new ReadOnlyObjectWrapper<>(
-                Arrays.stream(param.getValue().getCategories())
-                        .mapToObj(databaseFile.getDatabase()::getCategoryName)
-                        .toList().toString()
-        );
     }
 
     public TableRow<Entry> rowFactory(TableView<Entry> param) {
