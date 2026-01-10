@@ -74,6 +74,8 @@ public class DatabaseMenuController extends FxGuiController {
         var editItem = new MenuItem("Edit entry");
         editItem.setOnAction(event -> {
             new CreateNewEntryMenuController(entry, entry1 -> {
+                tableView.getItems().remove(entry);
+                tableView.getItems().add(entry);
                 wrappedSave();
             }).display(createModalSubstage());
         });

@@ -26,20 +26,14 @@ public class CreateNewEntryMenuController extends FxGuiController {
 
     private final Consumer<Entry> entryConsumer;
 
-    private Entry entry;
+    private final Entry entry;
 
     public CreateNewEntryMenuController(Consumer<Entry> entryConsumer) {
         this(new Entry(), entryConsumer);
     }
 
     public CreateNewEntryMenuController(Entry entry, Consumer<Entry> entryConsumer) {
-//        if(initial != null) {
-//            titleField.setText(initial.getTitle());
-//            usernameField.setText(initial.getUsername());
-//            passwordField.setText(initial.getPassword());
-//            urlField.setText(initial.getUrl());
-//            descriptionArea.setText(initial.getDescription());
-//        }
+
         this.entry = entry;
         this.entryConsumer = entryConsumer;
     }
@@ -50,6 +44,12 @@ public class CreateNewEntryMenuController extends FxGuiController {
         usernameField.setTextFormatter(TextLimiter.limit(50));
         passwordField.setTextFormatter(TextLimiter.limit(50));
         urlField.setTextFormatter(TextLimiter.limit(50));
+
+        titleField.setText(entry.getTitle());
+        usernameField.setText(entry.getUsername());
+        passwordField.setText(entry.getPassword());
+        urlField.setText(entry.getUrl());
+        descriptionArea.setText(entry.getDescription());
     }
 
     @Override
