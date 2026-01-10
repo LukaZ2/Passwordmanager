@@ -4,7 +4,9 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -14,9 +16,13 @@ import me.passwordmanager.MainApplication;
 import me.passwordmanager.database.Database;
 import me.passwordmanager.database.Entry;
 import me.passwordmanager.file.DatabaseFile;
+import me.passwordmanager.ui.util.TextLimiter;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class DatabaseMenuController extends FxGuiController {
 
@@ -32,6 +38,8 @@ public class DatabaseMenuController extends FxGuiController {
 
     @FXML
     public TextField searchField;
+
+    private ArrayList<Entry> displayedList;
 
     private final DatabaseFile databaseFile;
 
@@ -49,7 +57,35 @@ public class DatabaseMenuController extends FxGuiController {
         createdColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
 
         tableView.setRowFactory(this::rowFactory);
-        tableView.setItems(FXCollections.observableList(databaseFile.getDatabase().getEntries()));
+        displayedList = new ArrayList<>(List.copyOf(databaseFile.getDatabase().getEntries()));
+        tableView.setItems(FXCollections.observableList(displayedList));
+
+        initSearchbar();
+    }
+
+    public void initSearchbar() {
+        searchField.setTextFormatter(TextLimiter.limit(50));
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filterEntries(newValue));
+    }
+
+    public void filterEntries(String search) {
+        displayedList.clear();
+        displayedList.addAll(databaseFile.getDatabase().getEntries()
+                .stream()
+                .filter(entry -> filterEntry(entry, search))
+                .toList()
+        );
+        tableView.refresh();
+    }
+
+    public boolean filterEntry(Entry entry, String search) {
+        return Stream.of(
+                entry.getTitle(),
+                entry.getUsername(),
+                entry.getPassword(),
+                entry.getUrl(),
+                entry.getDescription()
+        ).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase()));
     }
 
     public TableRow<Entry> rowFactory(TableView<Entry> param) {
@@ -75,6 +111,7 @@ public class DatabaseMenuController extends FxGuiController {
         var deleteItem = new MenuItem("Delete entry");
         deleteItem.setOnAction(event -> {
             tableView.getItems().remove(entry);
+            databaseFile.getDatabase().getEntries().remove(entry);
             wrappedSave();
         });
 
@@ -112,6 +149,7 @@ public class DatabaseMenuController extends FxGuiController {
     }
 
     public void handleCreateNewEntry(Entry entry) {
+        databaseFile.getDatabase().getEntries().add(entry);
         tableView.getItems().add(entry);
         wrappedSave();
     }
