@@ -11,9 +11,11 @@ import me.passwordmanager.ui.MainMenuController;
 import me.passwordmanager.file.DatabaseFile;
 
 import java.util.Date;
+import java.util.regex.Pattern;
 
 public class MainApplication extends Application {
 
+    public static final Pattern STANDARD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9\\-_ ]+");
     public static final String APPLICATION_TITLE = "Passwordmanager";
     public static final String DATABASE_FILE_EXTENSION = "pwd";
 

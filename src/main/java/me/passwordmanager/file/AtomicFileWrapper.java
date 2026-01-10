@@ -86,8 +86,9 @@ public abstract class AtomicFileWrapper {
 //        readContent(Channels.newInputStream(fileChannel));
     }
 
-    public void readContent() throws IOException {
-        readContent(Channels.newInputStream(fileChannel));
+    public void readContentWrapped() throws IOException {
+        readContentWrapped(Channels.newInputStream(fileChannel));
+        refresh();
     }
 
     private boolean backupExists() {
@@ -132,7 +133,7 @@ public abstract class AtomicFileWrapper {
      * @param inputStream the input stream to read data from.
      * @throws IOException thrown when data cannot be read.
      */
-    protected abstract void readContent(InputStream inputStream) throws IOException;
+    protected abstract void readContentWrapped(InputStream inputStream) throws IOException;
 
     /**
      * Save the file atomically. Creates a temporary backup first, then writes content to the file and deletes the backup.
@@ -140,15 +141,20 @@ public abstract class AtomicFileWrapper {
      * @throws IOException thrown when data cannot be written.
      */
     public void save() throws IOException {
+
         var tmp = FileUtils.getFile(getTmpFilePath(), true);
         writeContent(new FileOutputStream(tmp));
 
         var backup = new File(getBackupFilePath());
         if(!tmp.renameTo(backup))
             throw new AtomicFileBackupCreateFeedback();
+        fileChannel.truncate(0);
         writeContent(Channels.newOutputStream(fileChannel));
 
         if(!backup.delete()) throw new AtomicFileBackupDeleteException();
+
+        refresh();
+
     }
 
     /**
@@ -159,6 +165,11 @@ public abstract class AtomicFileWrapper {
     public void close() throws IOException {
         fileLock.close();
         fileChannel.close();
+    }
+
+    public void refresh() throws IOException {
+        if(fileChannel != null && fileChannel.isOpen()) close();
+        open();
     }
 
 }

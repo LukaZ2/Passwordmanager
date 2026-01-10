@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Arrays;
 
 /**
  * The type Database file to be serialized as JSON.
@@ -57,12 +56,12 @@ public class DatabaseFile extends AtomicFileWrapper {
         try(var encryptedStream = cryptoHandler.wrapOutputStream(outputStream)) {
             encryptedStream.write(VERIFY_TOKEN.getBytes(StandardCharsets.UTF_8));
             var gson = new Gson();
-            encryptedStream.write(gson.toJson(database).getBytes(StandardCharsets.UTF_8));
+            encryptedStream.write(gson.toJson(database).trim().getBytes(StandardCharsets.UTF_8));
         }
     }
 
     @Override
-    protected void readContent(InputStream inputStream) throws IOException {
+    protected void readContentWrapped(InputStream inputStream) throws IOException {
         try {
             passwordSalt = new String(StreamUtils.read(inputStream, PASSWORD_SALT_LENGTH), StandardCharsets.UTF_8);
             initCryptoHandler(password, passwordSalt);
@@ -75,7 +74,8 @@ public class DatabaseFile extends AtomicFileWrapper {
             if(!checkVerifyToken(encryptedStream)) throw new InvalidPasswordException();
             var gson = new Gson();
             var data = StreamUtils.readAll(encryptedStream);
-            database = gson.fromJson(data, Database.class);
+            System.out.println(data.trim());
+            database = gson.fromJson(data.trim(), Database.class);
         }
     }
 
@@ -115,7 +115,7 @@ public class DatabaseFile extends AtomicFileWrapper {
     public void open(String password) throws IOException {
         this.password = password;
         super.open();
-        super.readContent();
+        super.readContentWrapped();
         this.password = null;
     }
 

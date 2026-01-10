@@ -9,6 +9,7 @@ import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
 import me.passwordmanager.ui.util.InfoGui;
+import me.passwordmanager.ui.util.TextLimiter;
 
 import java.io.FileNotFoundException;
 
@@ -32,6 +33,7 @@ public class MainMenuController extends FxGuiController {
     @FXML
     public void initialize() {
         fileField.setText(recentPath);
+        fileField.setTextFormatter(TextLimiter.limit(50));
     }
 
     private final String recentPath;

@@ -11,6 +11,7 @@ import me.passwordmanager.file.exception.AtomicFileCorruptedException;
 import me.passwordmanager.file.exception.AtomicFileLockedException;
 import me.passwordmanager.file.exception.InvalidPasswordException;
 import me.passwordmanager.ui.util.InfoGui;
+import me.passwordmanager.ui.util.TextLimiter;
 
 import java.io.IOException;
 
@@ -26,6 +27,11 @@ public class PasswordPromptController extends FxGuiController {
 
     public PasswordPromptController(DatabaseFile databaseFile) {
         this.databaseFile = databaseFile;
+    }
+
+    @FXML
+    public void initialize() {
+        passwordField.setTextFormatter(TextLimiter.limit(50));
     }
 
     @FXML

@@ -35,6 +35,7 @@ public class InfoGui implements IDisplayableGui {
         var root = new VBox();
         root.alignmentProperty().setValue(Pos.CENTER);
         root.setPadding(new Insets(20, 20, 20, 20));
+        root.setSpacing(10);
 
         var textElement = new Text(text);
         root.getChildren().add(textElement);

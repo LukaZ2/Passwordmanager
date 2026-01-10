@@ -1,9 +1,57 @@
 package me.passwordmanager.ui;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import me.passwordmanager.cryptography.CryptoUtils;
+import me.passwordmanager.database.Entry;
+import me.passwordmanager.ui.util.InfoGui;
+import me.passwordmanager.ui.util.TextLimiter;
+
+import java.util.function.Consumer;
 
 public class CreateNewEntryMenuController extends FxGuiController {
+    @FXML public TextField titleField;
+    @FXML public TextField usernameField;
+    @FXML public PasswordField passwordField;
+    @FXML public TextField urlField;
+    @FXML public TextArea descriptionArea;
+
+    private final Consumer<Entry> entryConsumer;
+
+    private Entry entry;
+
+    public CreateNewEntryMenuController(Consumer<Entry> entryConsumer) {
+        this(new Entry(), entryConsumer);
+    }
+
+    public CreateNewEntryMenuController(Entry entry, Consumer<Entry> entryConsumer) {
+//        if(initial != null) {
+//            titleField.setText(initial.getTitle());
+//            usernameField.setText(initial.getUsername());
+//            passwordField.setText(initial.getPassword());
+//            urlField.setText(initial.getUrl());
+//            descriptionArea.setText(initial.getDescription());
+//        }
+        this.entry = entry;
+        this.entryConsumer = entryConsumer;
+    }
+
+    @FXML
+    public void initialize() {
+        titleField.setTextFormatter(TextLimiter.limit(20));
+        usernameField.setTextFormatter(TextLimiter.limit(50));
+        passwordField.setTextFormatter(TextLimiter.limit(50));
+        urlField.setTextFormatter(TextLimiter.limit(50));
+    }
+
     @Override
     public String xmlFileName() {
         return "create-new-entry.fxml";
@@ -16,5 +64,57 @@ public class CreateNewEntryMenuController extends FxGuiController {
 
     @FXML
     public void onClickCreate(ActionEvent actionEvent) {
+        if(titleField.getText().isBlank()) {
+            new InfoGui("The title of the entry cannot be blank!").display(getStage());
+            return;
+        }
+        entry.setTitle(titleField.getText());
+        entry.setUsername(usernameField.getText());
+        entry.setPassword(passwordField.getText());
+        entry.setUrl(urlField.getText());
+        entry.setDescription(descriptionArea.getText());
+        entry.setDateModified(System.currentTimeMillis());
+
+        entryConsumer.accept(entry);
+        getStage().close();
+    }
+
+    @FXML
+    public void onClickedGenerate(ActionEvent actionEvent) {
+        var stage = createModalSubstage();
+        stage.setTitle("Generate new password");
+        var root = new VBox();
+
+        root.setPadding(new Insets(20, 20, 20, 20));
+        root.setSpacing(10);
+        root.setPrefWidth(500);
+        root.setAlignment(Pos.CENTER);
+
+        var label = new Label("Password length: ");
+        var label2 = new Label();
+
+        var slider = new Slider();
+        slider.setShowTickLabels(true);
+        slider.setShowTickMarks(true);
+        slider.setMajorTickUnit(1);
+        slider.setMinorTickCount(1);
+        slider.setBlockIncrement(1);
+        slider.setMin(8);
+        slider.setMax(50);
+        slider.setSnapToTicks(true);
+        slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            label2.setText(String.valueOf(newValue.intValue()));
+        });
+        slider.adjustValue(15);
+
+        var button = new Button("Generate");
+        button.setOnAction(event -> {
+            passwordField.setText(CryptoUtils.generateRandomPassword((int) slider.getValue()));
+            stage.close();
+        });
+
+        root.getChildren().addAll(new HBox(label, label2), slider, button);
+        stage.setScene(new Scene(root));
+        stage.show();
     }
 }

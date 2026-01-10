@@ -1,6 +1,7 @@
 package me.passwordmanager.ui;
 
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -13,6 +14,7 @@ import me.passwordmanager.database.Database;
 import me.passwordmanager.database.Entry;
 import me.passwordmanager.file.DatabaseFile;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class DatabaseMenuController extends FxGuiController {
@@ -44,12 +46,8 @@ public class DatabaseMenuController extends FxGuiController {
         modifiedColumn.setCellValueFactory(new PropertyValueFactory<>("dateModified"));
         createdColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
 
+        tableView.setRowFactory(this::rowFactory);
         tableView.setItems(FXCollections.observableList(databaseFile.getDatabase().getEntries()));
-        tableView.setRowFactory(param -> {
-            var tableRow = new TableRow<Entry>();
-            tableRow.setContextMenu(createContextMenu(tableRow));
-            return tableRow;
-        });
     }
 
     public ObservableValue<String> mapCategories(TableColumn.CellDataFeatures<Entry, String> param) {
@@ -60,15 +58,36 @@ public class DatabaseMenuController extends FxGuiController {
         );
     }
 
-    public ContextMenu createContextMenu(TableRow<Entry> row) {
+    public TableRow<Entry> rowFactory(TableView<Entry> param) {
+        var row = new TableRow<Entry>();
+        row.itemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue == null) return;
+            row.setContextMenu(createContextMenu(newValue));
+        });
+        return row;
+    }
+
+    public ContextMenu createContextMenu(Entry entry) {
         var contextMenu = new ContextMenu();
 
+        var editItem = new MenuItem("Edit entry");
+        editItem.setOnAction(event -> {
+            new CreateNewEntryMenuController(entry, entry1 -> {
+                wrappedSave();
+            }).display(createModalSubstage());
+        });
+
         var deleteItem = new MenuItem("Delete entry");
+        deleteItem.setOnAction(event -> {
+            tableView.getItems().remove(entry);
+            wrappedSave();
+        });
 
         contextMenu.getItems().addAll(
-                createCopyClipboardItem("username", row.getItem().getUsername()),
-                createCopyClipboardItem("password", row.getItem().getPassword()),
-                createCopyClipboardItem("url", row.getItem().getUrl()),
+                createCopyClipboardItem("username", entry.getUsername()),
+                createCopyClipboardItem("password", entry.getPassword()),
+                createCopyClipboardItem("url", entry.getUrl()),
+                editItem,
                 deleteItem
         );
         return contextMenu;
@@ -76,6 +95,7 @@ public class DatabaseMenuController extends FxGuiController {
 
     public MenuItem createCopyClipboardItem(String name, String value) {
         var menuItem = new MenuItem("Copy " + name);
+        System.out.printf("Copied %s%n", value);
         return menuItem;
     }
 
@@ -91,5 +111,19 @@ public class DatabaseMenuController extends FxGuiController {
 
     @FXML
     public void onClickCreateNew(ActionEvent actionEvent) {
+        new CreateNewEntryMenuController(this::handleCreateNewEntry).display(createModalSubstage());
+    }
+
+    public void handleCreateNewEntry(Entry entry) {
+        tableView.getItems().add(entry);
+        wrappedSave();
+    }
+
+    public void wrappedSave() {
+        try {
+            databaseFile.save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

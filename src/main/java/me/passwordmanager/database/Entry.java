@@ -18,10 +18,20 @@ public class Entry {
     public String url;
     public String description;
     public int[] categories;
-    public boolean deleted;
 
     public long dateCreated;
     public long dateModified;
+
+    public Entry() {
+        title = "";
+        username = "";
+        password = "";
+        url = "";
+        description = "";
+        categories = new int[0];
+        dateCreated = System.currentTimeMillis();
+        dateModified = System.currentTimeMillis();
+    }
     
 
     public ObservableValue<String> dateCreatedProperty() {

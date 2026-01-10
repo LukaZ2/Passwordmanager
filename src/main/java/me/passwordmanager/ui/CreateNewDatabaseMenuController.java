@@ -3,10 +3,12 @@ package me.passwordmanager.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.exception.FileCreateException;
 import me.passwordmanager.ui.util.InfoGui;
+import me.passwordmanager.ui.util.TextLimiter;
 
 import javax.crypto.NoSuchPaddingException;
 import java.io.File;
@@ -18,7 +20,6 @@ import java.util.regex.Pattern;
 
 public class CreateNewDatabaseMenuController extends FxGuiController {
 
-    public static final Pattern ALLOWED_FILENAME = Pattern.compile("[a-zA-Z0-9\\-_ ]+");
     public static final int MINIMUM_PASSWORD_LENGTH = 8;
 
     @FXML
@@ -31,8 +32,16 @@ public class CreateNewDatabaseMenuController extends FxGuiController {
     public TextField confirmPasswordField;
 
     @FXML
+    public void initialize() {
+        nameField.setTextFormatter(TextLimiter.limit(20));
+        directoryField.setTextFormatter(TextLimiter.limit(50));
+        passwordField.setTextFormatter(TextLimiter.limit(50));
+        confirmPasswordField.setTextFormatter(TextLimiter.limit(50));
+    }
+
+    @FXML
     public void createButtonClick(ActionEvent actionEvent) {
-        if(!ALLOWED_FILENAME.matcher(nameField.getText()).find()) {
+        if(!MainApplication.STANDARD_NAME_PATTERN.matcher(nameField.getText()).find()) {
             new InfoGui("Invalid filename!").display(getStage());
             return;
         }
