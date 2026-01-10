@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.util.Callback;
+import me.passwordmanager.MainApplication;
 import me.passwordmanager.database.Database;
 import me.passwordmanager.database.Entry;
 import me.passwordmanager.file.DatabaseFile;
@@ -95,7 +96,9 @@ public class DatabaseMenuController extends FxGuiController {
 
     public MenuItem createCopyClipboardItem(String name, String value) {
         var menuItem = new MenuItem("Copy " + name);
-        System.out.printf("Copied %s%n", value);
+        menuItem.setOnAction(event -> {
+            MainApplication.setClipboard(value);
+        });
         return menuItem;
     }
 

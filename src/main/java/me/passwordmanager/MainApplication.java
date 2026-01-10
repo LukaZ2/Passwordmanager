@@ -10,6 +10,8 @@ import me.passwordmanager.ui.util.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
 import me.passwordmanager.file.DatabaseFile;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -67,5 +69,10 @@ public class MainApplication extends Application {
         var date = new Date();
         date.setTime(unixTimeMs);
         return date.toString();
+    }
+
+    public static void setClipboard(String string) {
+        var selection = new StringSelection(string);
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
     }
 }
