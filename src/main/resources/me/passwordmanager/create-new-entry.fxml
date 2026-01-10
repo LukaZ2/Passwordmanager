@@ -28,7 +28,7 @@
         <VBox>
             <TextField fx:id="titleField"/>
             <TextField fx:id="usernameField"/>
-            <HBox spacing="8">
+            <HBox spacing="5">
                 <Group>
                     <PasswordField fx:id="passwordField"/>
                     <TextField fx:id="revealedPasswordField" visible="false"/>
