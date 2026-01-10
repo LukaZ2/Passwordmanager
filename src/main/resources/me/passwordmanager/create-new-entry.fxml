@@ -42,6 +42,6 @@
     <Label text="Description"/>
     <TextArea fx:id="descriptionArea"/>
 
-    <Button text="Create" onAction="#onClickCreate"/>
+    <Button text="Submit entry" onAction="#onClickCreate"/>
 
 </VBox>

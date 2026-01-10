@@ -65,7 +65,7 @@ public class CreateNewEntryMenuController extends FxGuiController {
 
     @Override
     public String initialTitle() {
-        return "Create new database entry";
+        return "Create/Modify database entry";
     }
 
     @FXML
