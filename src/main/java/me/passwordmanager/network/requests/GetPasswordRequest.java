@@ -13,6 +13,7 @@ public class GetPasswordRequest implements IRequest {
     @Override
     public IResponse getResponse() {
         var database = MainApplication.getInstance().getDatabase();
+        if(database == null) return new Response();
         synchronized (database) {
             Entry entry = database.getEntries().stream()
                     .filter(e -> e.getUrl().equalsIgnoreCase(url))
