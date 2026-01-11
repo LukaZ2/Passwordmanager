@@ -44,9 +44,7 @@ public class NetworkHandler {
 
     public void handleConnection(Socket socket) {
         try {
-            System.out.println("1");
             RequestWrapper requestWrapper = readRequest(socket);
-            System.out.println("2");
             handleRequest(socket, requestWrapper.getBody());
         } catch (IOException e) {
             throw new RuntimeException(e);
