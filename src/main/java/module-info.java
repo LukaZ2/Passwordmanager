@@ -2,7 +2,6 @@ module me.passwordmanager {
     requires javafx.controls;
     requires javafx.fxml;
 
-    requires org.kordamp.bootstrapfx.core;
     requires static lombok;
     requires com.google.gson;
     requires org.apache.commons.lang3;
