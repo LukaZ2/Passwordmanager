@@ -2,11 +2,15 @@ package me.passwordmanager.network;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import me.passwordmanager.file.StreamUtils;
 import me.passwordmanager.network.requests.IRequest;
 import me.passwordmanager.network.requests.IResponse;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
@@ -14,6 +18,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 public class NetworkHandler {
 
@@ -47,10 +52,17 @@ public class NetworkHandler {
     }
 
     public RequestWrapper readRequest(Socket socket) throws IOException {
-        //Read the length of the request
-        int length = readLength(socket);
-        //Read 'length' amount of bytes, and them to a string using UTF8 formatting
-        var data = new String(read(socket, length), 0, length, StandardCharsets.UTF_8);
+
+
+//        //Read the length of the request
+//        int length = readLength(socket);
+//        //Read 'length' amount of bytes, and them to a string using UTF8 formatting
+//        var data = new String(read(socket, length), 0, length, StandardCharsets.UTF_8);
+
+        var data = readHttpPostRequestBody(socket);
+
+        System.out.printf("Request received: %s%n", data);
+
         //Deserialize into a RequestWrapper using Gson
         var gson = new GsonBuilder().registerTypeAdapter(RequestWrapper.class, new RequestDeserializer()).create();
         return gson.fromJson(data, RequestWrapper.class);
@@ -69,10 +81,12 @@ public class NetworkHandler {
     public void handleRequest(Socket socket, IRequest request) throws IOException {
         var response = request.getResponse();
         var dataString = new Gson().toJson(response);
-        var data = ArrayUtils.addAll(integerToByteArray(dataString.length()), dataString.getBytes(StandardCharsets.UTF_8));
-        socket.getOutputStream().write(data);
-        socket.getOutputStream().flush();
-        socket.close();
+        System.out.printf("Response sent: %s%n", dataString);
+        writeHttpResponse(socket, dataString);
+//        var data = ArrayUtils.addAll(integerToByteArray(dataString.length()), dataString.getBytes(StandardCharsets.UTF_8));
+//        socket.getOutputStream().write(data);
+//        socket.getOutputStream().flush();
+//        socket.close();
     }
 
     public byte[] read(Socket socket, int length) throws IOException {
@@ -82,6 +96,40 @@ public class NetworkHandler {
             continue;
         }
         return buffer;
+    }
+
+    public String readHttpPostRequestBody(Socket socket) throws IOException {
+        var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        String line = reader.readLine();
+        int contentLength = -1;
+        if(!line.startsWith("POST")) return null;
+        while(!line.isBlank()) {
+            line = reader.readLine();
+            if(!line.startsWith("Content-Length:")) continue;
+            contentLength = Integer.parseInt(line.split(" ")[1]);
+        }
+        if(contentLength == -1) return null;
+
+        char[] buffer = new char[contentLength];
+        int off = 0;
+        int length = 0;
+        while((length = reader.read(buffer, off, contentLength-length)) > 0) {
+            off+=length;
+        }
+        return new String(buffer);
+    }
+
+    public void writeHttpResponse(Socket socket, String content) throws IOException {
+        var sb = new StringBuilder();
+        sb.append("HTTP/1.1 200 OK\r\n");
+        sb.append("Content-Type: application/json\r\n");
+        sb.append("Content-Length: ").append(content.length()).append("\r\n");
+        sb.append("\r\n");
+        sb.append(content);
+
+        try(var writer = new OutputStreamWriter(socket.getOutputStream())) {
+            writer.write(sb.toString());
+        }
     }
 
 }
