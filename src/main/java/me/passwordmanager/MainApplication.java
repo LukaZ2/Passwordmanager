@@ -5,6 +5,8 @@ import javafx.stage.Stage;
 import lombok.Getter;
 import lombok.Setter;
 import me.passwordmanager.database.Database;
+import me.passwordmanager.file.FileUtils;
+import me.passwordmanager.file.StreamUtils;
 import me.passwordmanager.network.NetworkHandler;
 import me.passwordmanager.ui.util.FxGuiHandler;
 import me.passwordmanager.ui.MainMenuController;
@@ -12,6 +14,7 @@ import me.passwordmanager.file.DatabaseFile;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.*;
 import java.util.Date;
 import java.util.regex.Pattern;
 
@@ -20,6 +23,7 @@ public class MainApplication extends Application {
     public static final Pattern STANDARD_NAME_PATTERN = Pattern.compile("[a-zA-Z0-9\\-_ ]+");
     public static final String APPLICATION_TITLE = "Passwordmanager";
     public static final String DATABASE_FILE_EXTENSION = "pwd";
+    public static final String RECENT_DATABASE_NAME = ".passwordmanager-recent";
 
     public static final int LISTEN_PORT = 23232;
 
@@ -29,7 +33,6 @@ public class MainApplication extends Application {
     @Getter
     private Stage stage;
 
-    @Setter
     @Getter
     private DatabaseFile databaseFile;
 
@@ -49,7 +52,31 @@ public class MainApplication extends Application {
 
         this.databaseFile = null;
 
-        new MainMenuController().display(getStage());
+        new MainMenuController(getRecent()).display(getStage());
+    }
+
+    public String getRecent() {
+        var file = new File(RECENT_DATABASE_NAME);
+        if(!file.exists()) return "";
+
+        try {
+            return StreamUtils.readAll(new FileInputStream(file));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setRecent(String recent) {
+        try(var writer = new BufferedWriter(new FileWriter(RECENT_DATABASE_NAME))) {
+            writer.write(recent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void setDatabaseFile(DatabaseFile databaseFile) {
+        this.databaseFile = databaseFile;
+        setRecent(databaseFile.getFilePath());
     }
 
     @Override
