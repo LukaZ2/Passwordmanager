@@ -61,8 +61,6 @@ public class NetworkHandler {
 
         var data = readHttpPostRequestBody(socket);
 
-        System.out.printf("Request received: %s%n", data);
-
         //Deserialize into a RequestWrapper using Gson
         var gson = new GsonBuilder().registerTypeAdapter(RequestWrapper.class, new RequestDeserializer()).create();
         return gson.fromJson(data, RequestWrapper.class);
@@ -81,7 +79,6 @@ public class NetworkHandler {
     public void handleRequest(Socket socket, IRequest request) throws IOException {
         var response = request.getResponse();
         var dataString = new Gson().toJson(response);
-        System.out.printf("Response sent: %s%n", dataString);
         writeHttpResponse(socket, dataString);
 //        var data = ArrayUtils.addAll(integerToByteArray(dataString.length()), dataString.getBytes(StandardCharsets.UTF_8));
 //        socket.getOutputStream().write(data);
