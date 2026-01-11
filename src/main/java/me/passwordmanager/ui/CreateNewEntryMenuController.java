@@ -15,6 +15,8 @@ import me.passwordmanager.database.Entry;
 import me.passwordmanager.ui.util.InfoGui;
 import me.passwordmanager.ui.util.TextLimiter;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.function.Consumer;
 
 public class CreateNewEntryMenuController extends FxGuiController {
@@ -72,6 +74,10 @@ public class CreateNewEntryMenuController extends FxGuiController {
     public void onClickCreate(ActionEvent actionEvent) {
         if(titleField.getText().isBlank()) {
             new InfoGui("The title of the entry cannot be blank!").display(getStage());
+            return;
+        }
+        if(!checkUrl(urlField.getText())) {
+            new InfoGui("Please enter a valid url!").display(getStage());
             return;
         }
         entry.setTitle(titleField.getText());
@@ -139,5 +145,18 @@ public class CreateNewEntryMenuController extends FxGuiController {
 
     private String getPassword() {
         return passwordRevealed ? revealedPasswordField.getText() : passwordField.getText();
+    }
+
+    public static boolean checkUrl(String url) {
+        if (url == null || url.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            new URL(url);
+            return true;
+        } catch (MalformedURLException e) {
+            return false;
+        }
     }
 }
