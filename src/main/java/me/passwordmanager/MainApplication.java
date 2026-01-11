@@ -47,9 +47,9 @@ public class MainApplication extends Application {
         this.networkHandler = new NetworkHandler();
         new Thread(() -> networkHandler.listen(LISTEN_PORT)).start();
 
-        String recentPath = "test";
+        this.databaseFile = null;
 
-        new MainMenuController(recentPath).display(getStage());
+        new MainMenuController().display(getStage());
     }
 
     @Override

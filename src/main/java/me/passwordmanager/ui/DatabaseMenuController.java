@@ -61,6 +61,8 @@ public class DatabaseMenuController extends FxGuiController {
         tableView.setItems(FXCollections.observableList(displayedList));
 
         initSearchbar();
+
+        MainApplication.getInstance().setDatabaseFile(databaseFile);
     }
 
     public void initSearchbar() {
