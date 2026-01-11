@@ -6,9 +6,9 @@ import org.apache.commons.lang3.NotImplementedException;
 
 public class CreateEntryRequest implements IRequest {
 
-    private String username;
-    private String password;
-    private String url;
+    public String username;
+    public String password;
+    public String url;
 
     @Override
     public IResponse getResponse() {
@@ -18,6 +18,6 @@ public class CreateEntryRequest implements IRequest {
 
     @AllArgsConstructor
     public static class Response implements IResponse {
-        boolean success;
+        public boolean success;
     }
 }

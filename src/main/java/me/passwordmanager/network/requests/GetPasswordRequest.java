@@ -8,7 +8,7 @@ import me.passwordmanager.database.Entry;
 @Getter
 public class GetPasswordRequest implements IRequest {
 
-    private String url;
+    public String url;
 
     @Override
     public IResponse getResponse() {
@@ -25,9 +25,9 @@ public class GetPasswordRequest implements IRequest {
 
     @AllArgsConstructor
     public static class Response implements IResponse {
-        boolean found;
-        String username;
-        String password;
+        public boolean found;
+        public String username;
+        public String password;
 
         Response() {
             this.found = false;
