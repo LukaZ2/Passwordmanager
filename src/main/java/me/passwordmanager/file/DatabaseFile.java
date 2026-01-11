@@ -74,7 +74,6 @@ public class DatabaseFile extends AtomicFileWrapper {
             if(!checkVerifyToken(encryptedStream)) throw new InvalidPasswordException();
             var gson = new Gson();
             var data = StreamUtils.readAll(encryptedStream);
-            System.out.println(data.trim());
             database = gson.fromJson(data.trim(), Database.class);
         }
     }
