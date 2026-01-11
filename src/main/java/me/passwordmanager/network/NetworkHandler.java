@@ -123,6 +123,7 @@ public class NetworkHandler {
         var sb = new StringBuilder();
         sb.append("HTTP/1.1 200 OK\r\n");
         sb.append("Content-Type: application/json\r\n");
+        sb.append("Access-Control-Allow-Origin: *\r\n");
         sb.append("Content-Length: ").append(content.length()).append("\r\n");
         sb.append("\r\n");
         sb.append(content);
