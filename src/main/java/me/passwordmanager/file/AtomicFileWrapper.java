@@ -1,6 +1,7 @@
 package me.passwordmanager.file;
 
 import lombok.Getter;
+import me.passwordmanager.Launcher;
 import me.passwordmanager.file.exception.*;
 
 import java.io.*;
@@ -149,7 +150,7 @@ public abstract class AtomicFileWrapper {
         var tmp = FileUtils.getFile(getTmpFilePath(), true);
         writeContent(new FileOutputStream(tmp));
 
-        var env = System.getenv("PASSWORDMANAGER_CRASH");
+        var env = Launcher.arg1;
         if(env != null && env.equals("BEFORE")) System.exit(0);
 
         var backup = new File(getBackupFilePath());
