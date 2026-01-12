@@ -2,6 +2,7 @@ package me.passwordmanager.file;
 
 import lombok.Getter;
 import me.passwordmanager.Launcher;
+import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.exception.*;
 
 import java.io.*;
@@ -150,15 +151,10 @@ public abstract class AtomicFileWrapper {
         var tmp = FileUtils.getFile(getTmpFilePath(), true);
         writeContent(new FileOutputStream(tmp));
 
-        var env = Launcher.crashTest;
-        if(env != null && env.startsWith("BEFORE")) System.exit(0);
-
         var backup = new File(getBackupFilePath());
         if(!tmp.renameTo(backup))
             throw new AtomicFileBackupCreateFeedback();
         fileChannel.truncate(0);
-
-        if(env != null && env.startsWith("AFTER")) System.exit(0);
 
         writeContent(Channels.newOutputStream(fileChannel));
 
