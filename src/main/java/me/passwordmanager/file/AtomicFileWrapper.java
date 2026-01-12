@@ -150,15 +150,15 @@ public abstract class AtomicFileWrapper {
         var tmp = FileUtils.getFile(getTmpFilePath(), true);
         writeContent(new FileOutputStream(tmp));
 
-        var env = Launcher.arg1;
-        if(env != null && env.equals("BEFORE")) System.exit(0);
+        var env = Launcher.crashTest;
+        if(env != null && env.startsWith("BEFORE")) System.exit(0);
 
         var backup = new File(getBackupFilePath());
         if(!tmp.renameTo(backup))
             throw new AtomicFileBackupCreateFeedback();
         fileChannel.truncate(0);
 
-        if(env != null && env.equals("AFTER")) System.exit(0);
+        if(env != null && env.startsWith("AFTER")) System.exit(0);
 
         writeContent(Channels.newOutputStream(fileChannel));
 
