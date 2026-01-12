@@ -99,14 +99,15 @@ public class NetworkHandler {
         var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String line = reader.readLine();
         int contentLength = -1;
-        if(!line.startsWith("POST")) return null;
-        while(!line.isBlank()) {
+        if(!line.startsWith("POST")) return null; //Request type must be POST
+        while(!line.isBlank()) { //The first blank line marks the end of the header section.
             line = reader.readLine();
             if(!line.startsWith("Content-Length:")) continue;
-            contentLength = Integer.parseInt(line.split(" ")[1]);
+            contentLength = Integer.parseInt(line.split(" ")[1]); //Store content length.
         }
-        if(contentLength == -1) return null;
+        if(contentLength == -1) return null; //Content-Length header was not found. Return.
 
+        //Read contentLength amount of characters and return them as a string.
         char[] buffer = new char[contentLength];
         int off = 0;
         int length = 0;
@@ -118,11 +119,11 @@ public class NetworkHandler {
 
     public void writeHttpResponse(Socket socket, String content) throws IOException {
         var sb = new StringBuilder();
-        sb.append("HTTP/1.1 200 OK\r\n");
-        sb.append("Content-Type: application/json\r\n");
-        sb.append("Access-Control-Allow-Origin: *\r\n");
-        sb.append("Content-Length: ").append(content.length()).append("\r\n");
-        sb.append("\r\n");
+        sb.append("HTTP/1.1 200 OK\r\n"); //Successful HTTP request
+        sb.append("Content-Type: application/json\r\n"); //Specify body data type
+        sb.append("Access-Control-Allow-Origin: *\r\n"); //Required for the browser to accept the response.
+        sb.append("Content-Length: ").append(content.length()).append("\r\n"); //Specify content length
+        sb.append("\r\n"); //Mark the end of the header section, response body can now be written.
         sb.append(content);
 
         try(var writer = new OutputStreamWriter(socket.getOutputStream())) {
