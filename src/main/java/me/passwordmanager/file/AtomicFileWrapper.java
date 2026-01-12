@@ -149,10 +149,16 @@ public abstract class AtomicFileWrapper {
         var tmp = FileUtils.getFile(getTmpFilePath(), true);
         writeContent(new FileOutputStream(tmp));
 
+        var env = System.getenv("PASSWORDMANAGER_CRASH");
+        if(env != null && env.equals("BEFORE")) System.exit(0);
+
         var backup = new File(getBackupFilePath());
         if(!tmp.renameTo(backup))
             throw new AtomicFileBackupCreateFeedback();
         fileChannel.truncate(0);
+
+        if(env != null && env.equals("AFTER")) System.exit(0);
+
         writeContent(Channels.newOutputStream(fileChannel));
 
         if(!backup.delete()) throw new AtomicFileBackupDeleteException();
