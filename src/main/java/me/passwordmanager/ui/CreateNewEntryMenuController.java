@@ -76,7 +76,7 @@ public class CreateNewEntryMenuController extends FxGuiController {
             new InfoGui("The title of the entry cannot be blank!").display(getStage());
             return;
         }
-        if(!checkUrl(urlField.getText())) {
+        if(!urlField.getText().isBlank() && !checkUrl(urlField.getText())) {
             new InfoGui("Please enter a valid url!").display(getStage());
             return;
         }
