@@ -45,14 +45,16 @@ public class CreateNewDatabaseMenuController extends FxGuiController {
             new InfoGui("Invalid filename!").display(getStage());
             return;
         }
-        var directory = new File(directoryField.getText());
-        if(!directory.exists()) {
-            new InfoGui(String.format("Directory \"%s\" does not exist!", directoryField.getText())).display(getStage());
-            return;
-        }
-        if(!directory.isDirectory()) {
-            new InfoGui(String.format("\"%s\" is not a directory!", directoryField.getText())).display(getStage());
-            return;
+        if(!directoryField.getText().isBlank()) {
+            var directory = new File(directoryField.getText());
+            if(!directory.exists()) {
+                new InfoGui(String.format("Directory \"%s\" does not exist!", directoryField.getText())).display(getStage());
+                return;
+            }
+            if(!directory.isDirectory()) {
+                new InfoGui(String.format("\"%s\" is not a directory!", directoryField.getText())).display(getStage());
+                return;
+            }
         }
         if(passwordField.getText().length() < MINIMUM_PASSWORD_LENGTH) {
             new InfoGui(String.format("The password has to be at least %d long!", MINIMUM_PASSWORD_LENGTH)).display(getStage());

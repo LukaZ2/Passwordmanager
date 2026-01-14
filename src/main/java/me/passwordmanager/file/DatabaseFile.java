@@ -25,7 +25,8 @@ import java.security.spec.InvalidKeySpecException;
 public class DatabaseFile extends AtomicFileWrapper {
 
     public static DatabaseFile createNewDatabase(String directory, String name, String password) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
-        if(!directory.endsWith("/")) directory += "/";
+        if(directory.isBlank()) directory = FileUtils.getWorkingDirectory();
+        if(!directory.isEmpty() && !directory.endsWith("/")) directory += "/";
         var filePath = directory + name + "." + MainApplication.DATABASE_FILE_EXTENSION;
         if(new File(filePath).exists()) throw new FileCreateException(String.format("File \"%s\" already exists.", filePath));
         var databaseFile = new DatabaseFile(filePath);

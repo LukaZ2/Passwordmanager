@@ -4,6 +4,7 @@ import me.passwordmanager.file.exception.FileCreateException;
 import me.passwordmanager.file.exception.IncorrectFileTypeException;
 
 import java.io.*;
+import java.nio.file.Paths;
 
 public class FileUtils {
 
@@ -31,6 +32,10 @@ public class FileUtils {
 
     public static String getAbsoluteDirectoryPath(String path) {
         return new File(path).getParentFile().getAbsolutePath();
+    }
+
+    public static String getWorkingDirectory() {
+        return Paths.get("").toAbsolutePath().toString();
     }
 
 

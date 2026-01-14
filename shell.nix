@@ -10,8 +10,8 @@ pkgs.mkShellNoCC {
     javaPackages.openjfx21
     libglibutil
     xorg.libXxf86vm
-    glibc
-    glib
+    # glibc
+    # glib
     gsettings-desktop-schemas
     (pkgs.jdk21.override {enableJavaFX = true;})
   ];
