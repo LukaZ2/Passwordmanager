@@ -77,9 +77,9 @@ public abstract class AtomicFileWrapper {
     }
 
     /**
-     * Open and read the contents of the atomic file.
+     * Open the atomic file.
      *
-     * @throws IOException thrown when the file cannot be read.
+     * @throws IOException thrown when the file cannot be opened.
      */
     public void open() throws IOException {
         fileChannel = FileChannel.open(Paths.get(getFilePath()), StandardOpenOption.READ, StandardOpenOption.WRITE);
@@ -89,6 +89,12 @@ public abstract class AtomicFileWrapper {
 //        readContent(Channels.newInputStream(fileChannel));
     }
 
+
+    /**
+     * Use the readContentWrapped method of the subclass and refresh
+     *
+     * @throws IOException thrown when data cannot be read
+     */
     public void readContentWrapped() throws IOException {
         readContentWrapped(Channels.newInputStream(fileChannel));
         refresh();
@@ -174,6 +180,11 @@ public abstract class AtomicFileWrapper {
         fileChannel.close();
     }
 
+    /**
+     * Reopen the file if it is opened
+     *
+     * @throws IOException forwarded from close() or open()
+     */
     public void refresh() throws IOException {
         if(fileChannel != null && fileChannel.isOpen()) close();
         open();

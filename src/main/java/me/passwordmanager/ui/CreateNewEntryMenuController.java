@@ -1,7 +1,5 @@
 package me.passwordmanager.ui;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -19,6 +17,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.function.Consumer;
 
+/**
+ * The Create new entry controller
+ */
 public class CreateNewEntryMenuController extends FxGuiController {
     @FXML public TextField titleField;
     @FXML public TextField usernameField;
@@ -29,6 +30,7 @@ public class CreateNewEntryMenuController extends FxGuiController {
 
     private boolean passwordRevealed;
 
+    //New entries are passed into this consumer from the parent (DatabaseMenuController)
     private final Consumer<Entry> entryConsumer;
 
     private final Entry entry;
@@ -70,12 +72,15 @@ public class CreateNewEntryMenuController extends FxGuiController {
         return "Create/Modify database entry";
     }
 
+    //Called when the create new entry button is clicked
     @FXML
     public void onClickCreate(ActionEvent actionEvent) {
+        //Check title validity
         if(titleField.getText().isBlank()) {
             new InfoGui("The title of the entry cannot be blank!").display(getStage());
             return;
         }
+        //Check url validity
         if(!urlField.getText().isBlank() && !checkUrl(urlField.getText())) {
             new InfoGui("Please enter a valid url!").display(getStage());
             return;
@@ -87,10 +92,12 @@ public class CreateNewEntryMenuController extends FxGuiController {
         entry.setDescription(descriptionArea.getText());
         entry.setDateModified(System.currentTimeMillis());
 
+        //Pass created entry to database menu controller
         entryConsumer.accept(entry);
         getStage().close();
     }
 
+    //Called when generate button is clicked and opens the generate menu
     @FXML
     public void onClickedGenerate(ActionEvent actionEvent) {
         var stage = createModalSubstage();
@@ -130,6 +137,7 @@ public class CreateNewEntryMenuController extends FxGuiController {
         stage.show();
     }
 
+    //Called when the reveal button is clicked and toggles password reveal
     @FXML
     public void onClickRevealPassword(ActionEvent actionEvent) {
         passwordRevealed = !passwordRevealed;
@@ -147,6 +155,12 @@ public class CreateNewEntryMenuController extends FxGuiController {
         return passwordRevealed ? revealedPasswordField.getText() : passwordField.getText();
     }
 
+    /**
+     * Check validity of a url
+     *
+     * @param url the url
+     * @return whether url is valid
+     */
     public static boolean checkUrl(String url) {
         if (url == null || url.trim().isEmpty()) {
             return false;

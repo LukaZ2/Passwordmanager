@@ -3,7 +3,6 @@ package me.passwordmanager.ui;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import me.passwordmanager.MainApplication;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.file.exception.FileCreateException;
@@ -16,8 +15,10 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.regex.Pattern;
 
+/**
+ * The controller for the database creation menu
+ */
 public class CreateNewDatabaseMenuController extends FxGuiController {
 
     public static final int MINIMUM_PASSWORD_LENGTH = 8;
@@ -39,12 +40,15 @@ public class CreateNewDatabaseMenuController extends FxGuiController {
         confirmPasswordField.setTextFormatter(TextLimiter.limit(50));
     }
 
+    //Called when the create button is clicked
     @FXML
     public void createButtonClick(ActionEvent actionEvent) {
+        //Check filename
         if(!MainApplication.STANDARD_NAME_PATTERN.matcher(nameField.getText()).find()) {
             new InfoGui("Invalid filename!").display(getStage());
             return;
         }
+        //Check directory path
         if(!directoryField.getText().isBlank()) {
             var directory = new File(directoryField.getText());
             if(!directory.exists()) {
@@ -56,15 +60,18 @@ public class CreateNewDatabaseMenuController extends FxGuiController {
                 return;
             }
         }
+        //Check whether password is long enough
         if(passwordField.getText().length() < MINIMUM_PASSWORD_LENGTH) {
             new InfoGui(String.format("The password has to be at least %d long!", MINIMUM_PASSWORD_LENGTH)).display(getStage());
             return;
         }
+        //Checks whether password matches confirm password
         if(!passwordField.getText().equals(confirmPasswordField.getText())) {
             new InfoGui("The passwords do not match!").display(getStage());
             return;
         }
 
+        //Create new database
         DatabaseFile databaseFile;
         try {
             databaseFile = DatabaseFile.createNewDatabase(directoryField.getText(), nameField.getText(), passwordField.getText());

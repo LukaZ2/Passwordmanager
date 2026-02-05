@@ -9,6 +9,9 @@ import me.passwordmanager.ui.util.FxGuiHandler;
 
 import java.io.IOException;
 
+/**
+ * The abstract type which all menu controllers extend from
+ */
 public abstract class FxGuiController implements IDisplayableGui {
 
     @Getter
@@ -16,8 +19,6 @@ public abstract class FxGuiController implements IDisplayableGui {
 
     public abstract String xmlFileName();
     public abstract String initialTitle();
-//    public abstract int initialWidth();
-//    public abstract int initialHeight();
 
     private void setStageProperties(Stage stage) {
         if(initialTitle() != null) stage.setTitle(MainApplication.APPLICATION_TITLE + " - " + initialTitle());

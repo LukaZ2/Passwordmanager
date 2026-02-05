@@ -5,7 +5,12 @@ import me.passwordmanager.network.requests.IRequest;
 
 import java.lang.reflect.Type;
 
+/**
+ * Required by GSON library for deserialization
+ */
 public class RequestDeserializer implements JsonDeserializer<RequestWrapper> {
+
+    //Required by GSON library for deserialization
     @Override
     public RequestWrapper deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject jsonObject = jsonElement.getAsJsonObject();

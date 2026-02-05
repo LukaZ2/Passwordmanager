@@ -12,7 +12,7 @@ public class CreateEntryRequest implements IRequest {
 
     @Override
     public IResponse getResponse() {
-        //TODO: finish this
+        //TODO: This class is for demonstration purposes for extensibility, it was not implemented
         return new Response(false);
     }
 

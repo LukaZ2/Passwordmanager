@@ -20,10 +20,21 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
+/**
+ * The type Network handler. Used for Http handling
+ */
 public class NetworkHandler {
 
+    /**
+     * The read timeout for sockets.
+     */
     public static final int READ_TIMEOUT = 10000;
 
+    /**
+     * Main loop for connection listening
+     *
+     * @param port the port to listen on
+     */
     public void listen(int port) {
         //Try-with-resources statement auto-closes the ServerSocket when exiting the try-statement.
         try(ServerSocket serverSocket = new ServerSocket(port)) {
@@ -42,6 +53,11 @@ public class NetworkHandler {
         }
     }
 
+    /**
+     * Handle a new connection.
+     *
+     * @param socket the socket of the connection
+     */
     public void handleConnection(Socket socket) {
         try {
             RequestWrapper requestWrapper = readRequest(socket);
@@ -51,14 +67,14 @@ public class NetworkHandler {
         }
     }
 
+    /**
+     * Read a request from a socket
+     *
+     * @param socket the socket
+     * @return the request wrapper
+     * @throws IOException when data could not be read
+     */
     public RequestWrapper readRequest(Socket socket) throws IOException {
-
-
-//        //Read the length of the request
-//        int length = readLength(socket);
-//        //Read 'length' amount of bytes, and them to a string using UTF8 formatting
-//        var data = new String(read(socket, length), 0, length, StandardCharsets.UTF_8);
-
         var data = readHttpPostRequestBody(socket);
 
         //Deserialize into a RequestWrapper using Gson
@@ -66,35 +82,28 @@ public class NetworkHandler {
         return gson.fromJson(data, RequestWrapper.class);
     }
 
-    public int readLength(Socket socket) throws IOException {
-        return ByteBuffer.wrap(read(socket, Integer.BYTES)).getInt();
-    }
 
-    public byte[] integerToByteArray(int i) {
-        var buffer = ByteBuffer.allocate(Integer.BYTES);
-        buffer.putInt(i);
-        return buffer.array();
-    }
-
+    /**
+     * Handle HTTP request
+     *
+     * @param socket  the socket
+     * @param request the request
+     * @throws IOException when data could not be read
+     */
     public void handleRequest(Socket socket, IRequest request) throws IOException {
         var response = request.getResponse();
         var dataString = new Gson().toJson(response);
         writeHttpResponse(socket, dataString);
-//        var data = ArrayUtils.addAll(integerToByteArray(dataString.length()), dataString.getBytes(StandardCharsets.UTF_8));
-//        socket.getOutputStream().write(data);
-//        socket.getOutputStream().flush();
-//        socket.close();
     }
 
-    public byte[] read(Socket socket, int length) throws IOException {
-        byte[] buffer = new byte[length];
-        int offset = 0;
-        while(offset < length && (offset += socket.getInputStream().read(buffer, offset, length-offset)) > 0) {
-            continue;
-        }
-        return buffer;
-    }
 
+    /**
+     * Read http post request body string.
+     *
+     * @param socket the socket
+     * @return the body of the request
+     * @throws IOException when data could not be read or is invalid
+     */
     public String readHttpPostRequestBody(Socket socket) throws IOException {
         var reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         String line = reader.readLine();
@@ -117,6 +126,13 @@ public class NetworkHandler {
         return new String(buffer);
     }
 
+    /**
+     * Write http response.
+     *
+     * @param socket  the socket
+     * @param content the content
+     * @throws IOException when data could not be written
+     */
     public void writeHttpResponse(Socket socket, String content) throws IOException {
         var sb = new StringBuilder();
         sb.append("HTTP/1.1 200 OK\r\n"); //Successful HTTP request

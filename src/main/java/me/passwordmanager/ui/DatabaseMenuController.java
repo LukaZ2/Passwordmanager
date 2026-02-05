@@ -1,29 +1,23 @@
 package me.passwordmanager.ui;
 
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
-import javafx.util.Callback;
 import me.passwordmanager.MainApplication;
-import me.passwordmanager.database.Database;
 import me.passwordmanager.database.Entry;
 import me.passwordmanager.file.DatabaseFile;
 import me.passwordmanager.ui.util.TextLimiter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
+/**
+ * The controller of the main database menu
+ */
 public class DatabaseMenuController extends FxGuiController {
 
 
@@ -39,8 +33,10 @@ public class DatabaseMenuController extends FxGuiController {
     @FXML
     public TextField searchField;
 
+    //List displayed in table
     private ArrayList<Entry> displayedList;
 
+    //The opened database file
     private final DatabaseFile databaseFile;
 
     public DatabaseMenuController(DatabaseFile databaseFile) {
@@ -80,6 +76,13 @@ public class DatabaseMenuController extends FxGuiController {
         tableView.refresh();
     }
 
+    /**
+     * Check whether any field in an entry match the search string
+     *
+     * @param entry  the entry
+     * @param search the search string
+     * @return whether it matches
+     */
     public boolean filterEntry(Entry entry, String search) {
         return Stream.of(
                 entry.getTitle(),
@@ -90,6 +93,7 @@ public class DatabaseMenuController extends FxGuiController {
         ).anyMatch(s -> s.toLowerCase().contains(search.toLowerCase()));
     }
 
+    //Row factory for JavaFx to create interactable rows (Right-click)
     public TableRow<Entry> rowFactory(TableView<Entry> param) {
         var row = new TableRow<Entry>();
         row.itemProperty().addListener((observable, oldValue, newValue) -> {
@@ -99,6 +103,7 @@ public class DatabaseMenuController extends FxGuiController {
         return row;
     }
 
+    //Create the context menu on right-click
     public ContextMenu createContextMenu(Entry entry) {
         var contextMenu = new ContextMenu();
 
@@ -127,6 +132,13 @@ public class DatabaseMenuController extends FxGuiController {
         return contextMenu;
     }
 
+    /**
+     * Create a MenuItem which sets the system clipboard to a value
+     *
+     * @param name  the name of the menu item
+     * @param value the value
+     * @return the menu item
+     */
     public MenuItem createCopyClipboardItem(String name, String value) {
         var menuItem = new MenuItem("Copy " + name);
         menuItem.setOnAction(event -> {
@@ -145,17 +157,21 @@ public class DatabaseMenuController extends FxGuiController {
         return databaseFile.getFileName();
     }
 
+    //Called when create new entry is clicked, opens the create menu
     @FXML
     public void onClickCreateNew(ActionEvent actionEvent) {
         new CreateNewEntryMenuController(this::handleCreateNewEntry).display(createModalSubstage());
     }
 
+    //Called when a new entry is created through the create new entry menu
+    //Adds entry to database and displayed entries
     public void handleCreateNewEntry(Entry entry) {
         databaseFile.getDatabase().getEntries().add(entry);
         tableView.getItems().add(entry);
         wrappedSave();
     }
 
+    //Catch exceptions and save
     public void wrappedSave() {
         try {
             databaseFile.save();

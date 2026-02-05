@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import me.passwordmanager.MainApplication;
 
+/**
+ * The type Entry.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
@@ -30,12 +33,22 @@ public class Entry {
         dateCreated = System.currentTimeMillis();
         dateModified = System.currentTimeMillis();
     }
-    
 
+
+    /**
+     * Required by JavaFX to get updatable tables
+     *
+     * @return date created String
+     */
     public ObservableValue<String> dateCreatedProperty() {
         return new ReadOnlyObjectWrapper<>(MainApplication.getFormattedDate(dateCreated));
     }
-    
+
+    /**
+     * Required by JavaFX to get updatable tables
+     *
+     * @return date modified String
+     */
     public ObservableValue<String> dateModifiedProperty() {
         return new ReadOnlyObjectWrapper<>(MainApplication.getFormattedDate(dateModified));
     }

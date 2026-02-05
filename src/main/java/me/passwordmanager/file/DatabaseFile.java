@@ -24,6 +24,20 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class DatabaseFile extends AtomicFileWrapper {
 
+
+    /**
+     * Create new database database file.
+     *
+     * @param directory the creation directory
+     * @param name      the filename
+     * @param password  the password
+     * @return the database file
+     * @throws IOException              thrown when database cannot be created
+     * @throws NoSuchPaddingException   thrown when padding is invalid, normally not thrown
+     * @throws NoSuchAlgorithmException thrown when encryption algorithm is invalid, normally not thrown
+     * @throws InvalidKeySpecException  thrown when key specification is invalid, normally not thrown
+     * @throws InvalidKeyException      thrown when encryption key is invalid, normally not thrown
+     */
     public static DatabaseFile createNewDatabase(String directory, String name, String password) throws IOException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException {
         if(directory.isBlank()) directory = FileUtils.getWorkingDirectory();
         if(!directory.isEmpty() && !directory.endsWith("/")) directory += "/";
@@ -50,19 +64,26 @@ public class DatabaseFile extends AtomicFileWrapper {
     @Getter
     private Database database;
 
+    //Write unencrypted password salt and encrypted data to file
     @Override
     protected void writeContent(OutputStream outputStream) throws IOException {
+        //Write password salt first
         outputStream.write(passwordSalt.getBytes(StandardCharsets.UTF_8), 0, passwordSalt.length());
         outputStream.flush();
+        //Wrap stream in CipherStream for encryption
         try(var encryptedStream = cryptoHandler.wrapOutputStream(outputStream)) {
+            //Write verify token to CipherStream
             encryptedStream.write(VERIFY_TOKEN.getBytes(StandardCharsets.UTF_8));
+            //Convert database object to JSON and write to CipherStream
             var gson = new Gson();
             encryptedStream.write(gson.toJson(database).trim().getBytes(StandardCharsets.UTF_8));
         }
     }
 
+    //Read password salt and decrypt data to memory
     @Override
     protected void readContentWrapped(InputStream inputStream) throws IOException {
+        //Read unencrypted password salt
         try {
             passwordSalt = new String(StreamUtils.read(inputStream, PASSWORD_SALT_LENGTH), StandardCharsets.UTF_8);
             initCryptoHandler(password, passwordSalt);
@@ -71,14 +92,24 @@ public class DatabaseFile extends AtomicFileWrapper {
             throw new DatabaseLoadException("Failed to read password salt.");
         }
 
+        //Wrap stream in CipherStream for decryption
         try(var encryptedStream = cryptoHandler.wrapInputStream(inputStream)) {
+            //Read verify token from CipherStream to check password validity
             if(!checkVerifyToken(encryptedStream)) throw new InvalidPasswordException();
+            //Parse JSON data from CipherStream and store in database field
             var gson = new Gson();
             var data = StreamUtils.readAll(encryptedStream);
             database = gson.fromJson(data.trim(), Database.class);
         }
     }
 
+    /**
+     * Check if the very token is correct (Password validity)
+     *
+     * @param stream the stream
+     * @return if token is valid
+     * @throws IOException thrown when data cannot be read
+     */
     public boolean checkVerifyToken(CipherInputStream stream) throws IOException {
         var token = new String(StreamUtils.read(stream, VERIFY_TOKEN.length()), StandardCharsets.UTF_8);
         return token.equals(VERIFY_TOKEN);
@@ -96,6 +127,7 @@ public class DatabaseFile extends AtomicFileWrapper {
         database = new Database();
     }
 
+    //Throw exception if file path is incorrect
     @Override
     public void checkFilePath() throws FileNotFoundException, IncorrectFileTypeException {
         super.checkFilePath();
@@ -119,6 +151,7 @@ public class DatabaseFile extends AtomicFileWrapper {
         this.password = null;
     }
 
+    //Initialize new file after creation
     private void initNew(String password) throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, IOException {
         database = new Database();
         passwordSalt = CryptoUtils.generateRandomPassword(PASSWORD_SALT_LENGTH);

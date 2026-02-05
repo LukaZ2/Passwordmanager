@@ -15,6 +15,9 @@ import me.passwordmanager.ui.util.TextLimiter;
 
 import java.io.IOException;
 
+/**
+ * The Password prompt controller.
+ */
 public class PasswordPromptController extends FxGuiController {
 
     @FXML
@@ -34,6 +37,7 @@ public class PasswordPromptController extends FxGuiController {
         passwordField.setTextFormatter(TextLimiter.limit(50));
     }
 
+    //Clicked when the confirm button is clicked, checks password validity and tries to open database.
     @FXML
     public void onConfirm(ActionEvent actionEvent) {
         if(passwordField.getText().isEmpty()) return;

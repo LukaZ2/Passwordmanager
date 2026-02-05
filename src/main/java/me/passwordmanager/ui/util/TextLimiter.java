@@ -4,6 +4,9 @@ import javafx.scene.control.TextFormatter;
 
 import java.util.function.UnaryOperator;
 
+/**
+ * Used to limit textfields in JavaFx
+ */
 public class TextLimiter {
 
     public static TextFormatter<?> limit(int limit) {

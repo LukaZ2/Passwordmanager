@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.passwordmanager.network.requests.IRequest;
 
+/**
+ * The Wrapper for requests, contains body and type
+ */
 @AllArgsConstructor
 @Getter
 public class RequestWrapper {

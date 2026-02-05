@@ -10,6 +10,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import me.passwordmanager.ui.IDisplayableGui;
 
+/**
+ * The Info Gui used for displaying messages and errors
+ */
 public class InfoGui implements IDisplayableGui {
 
     private final String text;

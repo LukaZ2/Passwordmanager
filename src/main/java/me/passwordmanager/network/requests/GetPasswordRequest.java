@@ -8,6 +8,9 @@ import me.passwordmanager.database.Entry;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+/**
+ * The request used for getting passwords
+ */
 @Getter
 public class GetPasswordRequest implements IRequest {
 
@@ -25,6 +28,14 @@ public class GetPasswordRequest implements IRequest {
             return new Response(true, entry.getUsername(), entry.getPassword());
         }
     }
+
+    /**
+     * Check if two domains match
+     *
+     * @param url1 the first domain
+     * @param url2 the second domain
+     * @return whether the domains match
+     */
     public static boolean domainsMatch(String url1, String url2) {
         try {
             String host1 = normalizeHost(new URI(url1).getHost());
@@ -38,6 +49,7 @@ public class GetPasswordRequest implements IRequest {
         }
     }
 
+    //Remove www. from host
     private static String normalizeHost(String host) {
         if (host == null) return null;
         host = host.toLowerCase();

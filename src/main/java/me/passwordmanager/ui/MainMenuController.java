@@ -13,6 +13,9 @@ import me.passwordmanager.ui.util.TextLimiter;
 
 import java.io.FileNotFoundException;
 
+/**
+ * The Main menu controller.
+ */
 public class MainMenuController extends FxGuiController {
 
     @Override
@@ -38,12 +41,6 @@ public class MainMenuController extends FxGuiController {
 
     private final String recentPath;
 
-//    public void setMessage(String text) {
-//        msg.setText(text.replace("%t", fileField.getText()));
-//        msg.setFill(Color.RED);
-//        msg.setVisible(true);
-//    }
-
     public MainMenuController() {
         this("");
     }
@@ -52,6 +49,7 @@ public class MainMenuController extends FxGuiController {
         this.recentPath = recentPath;
     }
 
+    //Called when the choose file button is clicked, opens the operating system's file chooser
     public void chooseFileButtonClick(ActionEvent actionEvent) {
         var fileChooser = new FileChooser();
         fileChooser.setTitle("Open database");
@@ -61,10 +59,12 @@ public class MainMenuController extends FxGuiController {
         fileField.setText(file.getAbsolutePath());
     }
 
+    //Called when the create new file button is clicked, opens create new file menu
     public void createNewFileButtonClick(ActionEvent actionEvent) {
         new CreateNewDatabaseMenuController().display(createModalSubstage());
     }
 
+    //Called when the open selected button is clicked, tries to open the selected database
     public void openSelectedButtonClick(ActionEvent actionEvent) {
         var databaseFile = new DatabaseFile(fileField.getText());
 
